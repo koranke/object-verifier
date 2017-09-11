@@ -1,15 +1,17 @@
 package objectVerifier;
 
 import com.google.common.collect.Lists;
+import objectVerifier.applicationRules.DateApplicationRule;
+import objectVerifier.applicationRules.IVerificationRuleApplicationRule;
 import objectVerifier.utilities.IntrospectionHelper;
 import objectVerifier.utilities.ObjectHelper;
-import objectVerifier.verificationRules.ListContainsRule;
-import objectVerifier.verificationRules.NumberExactMatchRule;
-import objectVerifier.verificationRules.StringExactMatchRule;
-import objectVerifier.verificationRules.VerificationRule;
+import objectVerifier.verificationRules.*;
 import org.testng.Assert;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +34,7 @@ public class ObjectVerifier {
 			Assert.fail(msg);
 		}
 
-		verificationRules = setRulesToDefaultValuesIfNotSet(verificationRules);
+		verificationRules = setGlobalRulesToDefaultValuesIfNotSet(verificationRules);
 		Set<String> fieldsRemainingToCheck = getRestrictedFieldList(domainObjectClass, fieldsToCheck);
 		PropertyDescriptor[] dataItemDescriptors = IntrospectionHelper.getPropertyDescriptors(domainObjectClass);
 
@@ -50,18 +52,48 @@ public class ObjectVerifier {
 		}
 	}
 
-	private static List<VerificationRule> setRulesToDefaultValuesIfNotSet(List<VerificationRule> verificationRules) {
-		Set<VerificationRule> defaultRules = new HashSet<>();
-		defaultRules.add(new StringExactMatchRule());
-		defaultRules.add(new NumberExactMatchRule());
-		defaultRules.add(new ListContainsRule());
+	private static List<VerificationRule> setGlobalRulesToDefaultValuesIfNotSet(List<VerificationRule> existingRules) {
+		List<VerificationRule> defaultRules = getDefaultRules();
+		defaultRules.add(new ListExactMatchRule().setChildVerificationRules(getDefaultRules()));
 
-		if (verificationRules == null || verificationRules.size() == 0) {
+		if (existingRules == null || existingRules.size() == 0) {
 			return Lists.newArrayList(defaultRules);
 		} else {
-			defaultRules.addAll(verificationRules);
-			return Lists.newArrayList(defaultRules);
+			for (VerificationRule defaultRule : defaultRules) {
+				boolean matchingRuleFound = false;
+				for (VerificationRule existingRule : existingRules) {
+					if (matchingApplicationRuleFound(defaultRule.getApplicationRules(), existingRule.getApplicationRules())) {
+						matchingRuleFound = true;
+					}
+				}
+				if (!matchingRuleFound) {
+					existingRules.add(defaultRule);
+				}
+			}
+			return existingRules;
 		}
+	}
+
+	private static List<VerificationRule> getDefaultRules() {
+		List<VerificationRule> defaultRules = new ArrayList<>();
+		defaultRules.add(new StringExactMatchRule());
+		defaultRules.add(new NumberExactMatchRule());
+		defaultRules.add(new DateTimeInRangeRule(5, ChronoUnit.MINUTES ));
+		return defaultRules;
+	}
+
+	private static boolean matchingApplicationRuleFound(
+			List<IVerificationRuleApplicationRule> ruleList1,
+			List<IVerificationRuleApplicationRule> ruleList2) {
+
+		for (IVerificationRuleApplicationRule ruleFromList1 : ruleList1) {
+			for (IVerificationRuleApplicationRule ruleFromList2 : ruleList2) {
+				if (ruleFromList1.getClass() == ruleFromList2.getClass()) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private static String getStandardErrorMessage(Class<?> domainObjectClass, String currentDateMemberName, String contextMessage) {

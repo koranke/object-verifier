@@ -1,5 +1,7 @@
 package objectVerifier.applicationRules;
 
+import objectVerifier.utilities.ObjectHelper;
+
 public class NumberApplicationRule implements IVerificationRuleApplicationRule {
 
 	public boolean dataIsApplicable(Object actualObject, Object expectedObject) {

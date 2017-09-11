@@ -37,48 +37,48 @@ public class DateTimeHelper {
 	 * @param referenceDate The date that we want to use as our root verification time.
 	 * @return True or False.
 	 */
-	public static boolean isWithinTimeRange(LocalDateTime comparatorDate, int checkRange, TemporalUnit timeUnit, LocalDateTime referenceDate) {
+	public static boolean isWithinTimeRange(LocalDateTime comparatorDate, long checkRange, TemporalUnit timeUnit, LocalDateTime referenceDate) {
 		if (comparatorDate == null || referenceDate == null) return false;
 		return comparatorDate.isAfter(referenceDate.minus(checkRange, timeUnit)) && comparatorDate.isBefore(referenceDate.plus(checkRange, timeUnit));
 	}
 
-	public static boolean isWithinTimeRange(LocalDate comparatorDate, int checkRange, TemporalUnit timeUnit, LocalDate referenceDate) {
+	public static boolean isWithinTimeRange(LocalDate comparatorDate, long checkRange, TemporalUnit timeUnit, LocalDate referenceDate) {
 		if (comparatorDate == null || referenceDate == null) return false;
 		LocalDateTime cd = comparatorDate.atStartOfDay();
 		LocalDateTime rd = referenceDate.atStartOfDay();
 		return isWithinTimeRange(cd, checkRange, timeUnit, rd);
 	}
 
-	public static boolean isWithinTimeRange(java.sql.Timestamp comparatorDate, int checkRange, TemporalUnit timeUnit, java.sql.Timestamp referenceDate) {
+	public static boolean isWithinTimeRange(java.sql.Timestamp comparatorDate, long checkRange, TemporalUnit timeUnit, java.sql.Timestamp referenceDate) {
 		if (comparatorDate == null || referenceDate == null) return false;
 		LocalDateTime cd = comparatorDate.toLocalDateTime();
 		LocalDateTime rd = referenceDate.toLocalDateTime();
 		return isWithinTimeRange(cd, checkRange, timeUnit, rd);
 	}
 
-	public static boolean isWithinTimeRange(java.sql.Date comparatorDate, int checkRange, TemporalUnit timeUnit, java.sql.Date referenceDate) {
+	public static boolean isWithinTimeRange(java.sql.Date comparatorDate, long checkRange, TemporalUnit timeUnit, java.sql.Date referenceDate) {
 		if (comparatorDate == null || referenceDate == null) return false;
 		LocalDateTime cd = comparatorDate.toLocalDate().atStartOfDay();
 		LocalDateTime rd = referenceDate.toLocalDate().atStartOfDay();
 		return isWithinTimeRange(cd, checkRange, timeUnit, rd);
 	}
 
-	public static boolean isWithinTimeRange(java.util.Date comparatorDate, int checkRange, TemporalUnit timeUnit, java.util.Date referenceDate) {
+	public static boolean isWithinTimeRange(java.util.Date comparatorDate, long checkRange, TemporalUnit timeUnit, java.util.Date referenceDate) {
 		if (comparatorDate == null || referenceDate == null) return false;
 		LocalDateTime cd = LocalDateTime.ofInstant(comparatorDate.toInstant(), ZoneId.systemDefault());
 		LocalDateTime rd = LocalDateTime.ofInstant(referenceDate.toInstant(), ZoneId.systemDefault());
 		return isWithinTimeRange(cd, checkRange, timeUnit, rd);
 	}
 
-	public static boolean isWithinTimeRange(java.util.Calendar comparatorDate, int checkRange, TemporalUnit timeUnit, java.util.Calendar referenceDate) {
+	public static boolean isWithinTimeRange(java.util.Calendar comparatorDate, long checkRange, TemporalUnit timeUnit, java.util.Calendar referenceDate) {
 		if (comparatorDate == null || referenceDate == null) return false;
 		LocalDateTime cd = LocalDateTime.ofInstant(comparatorDate.toInstant(), ZoneId.systemDefault());
 		LocalDateTime rd = LocalDateTime.ofInstant(referenceDate.toInstant(), ZoneId.systemDefault());
 		return isWithinTimeRange(cd, checkRange, timeUnit, rd);
 	}
 
-	public static <T> boolean isWithinTimeRange(Class<T> cls, T comparatorDate, int checkRange, TemporalUnit timeUnit, T referenceDate) {
-		switch (cls.getCanonicalName()) {
+	public static boolean isWithinTimeRange(String className, Object comparatorDate, long checkRange, TemporalUnit timeUnit, Object referenceDate) {
+		switch (className) {
 			case "java.time.LocalDateTime":
 				return isWithinTimeRange((LocalDateTime) comparatorDate, checkRange, timeUnit, (LocalDateTime) referenceDate);
 			case "java.time.LocalDate":
@@ -92,7 +92,7 @@ public class DateTimeHelper {
 			case "java.util.Calendar":
 				return isWithinTimeRange((java.util.Calendar) comparatorDate, checkRange, timeUnit, (java.util.Calendar)referenceDate);
 			default:
-				Assert.fail(String.format("Data type %s not supported.  Update this method to add support.", cls.getCanonicalName()));
+				Assert.fail(String.format("Data type %s not supported.  Update this method to add support.", className));
 		}
 		return false;
 	}

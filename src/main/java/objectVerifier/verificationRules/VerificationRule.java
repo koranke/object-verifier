@@ -12,12 +12,21 @@ public abstract class VerificationRule {
 		this.applicationRules = applicationRules;
 	}
 
+	public List<IVerificationRuleApplicationRule> getApplicationRules() {
+		return applicationRules;
+	}
+
+	public VerificationRule setChildVerificationRules(List<VerificationRule> childVerificationRules) {
+		this.childVerificationRules = childVerificationRules;
+		return this;
+	}
+
 	public VerificationRule addChildVerificationRule(VerificationRule childVerificationRule) {
 		childVerificationRules.add(childVerificationRule);
 		return this;
 	}
 
-	public void verify(Object actualObject, Object expectedObject, String errorMessage) {
+	public boolean verify(Object actualObject, Object expectedObject, String errorMessage) {
 		boolean isOkToVerify = true;
 		for (IVerificationRuleApplicationRule applicationRule : applicationRules) {
 			if (!applicationRule.dataIsApplicable(actualObject, expectedObject)) {
@@ -27,7 +36,9 @@ public abstract class VerificationRule {
 		}
 		if (isOkToVerify) {
 			verifyObject(actualObject, expectedObject, errorMessage);
+			return true;
 		}
+		return false;
 	}
 
 	protected abstract void verifyObject(Object actualObject, Object expectedObject, String errorMessage);

@@ -25,8 +25,10 @@ public class ListContainsRule extends VerificationRule {
 			for (Object actualItem : actual) {
 				for (VerificationRule childVerificationRule : childVerificationRules) {
 					try {
-						childVerificationRule.verify(actualItem, expectedItem, "");
-						expectedItemFound = true;
+						boolean ranCheck = childVerificationRule.verify(actualItem, expectedItem, "");
+						if (ranCheck) {
+							expectedItemFound = true;
+						}
 					} catch (AssertionError e) {	}
 				}
 			}
