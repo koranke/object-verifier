@@ -1,6 +1,8 @@
 package objectVerifier;
 
+import com.google.common.collect.Lists;
 import objectVerifier.applicationRules.IVerificationRuleApplicationRule;
+import objectVerifier.verificationRules.VerificationRule;
 import org.testng.Assert;
 import java.util.HashMap;
 import java.util.List;
@@ -43,13 +45,17 @@ public class FieldsToCheck {
 		return this;
 	}
 
-	public FieldsToCheck addField(String field, List<IVerificationRuleApplicationRule> applicationRules) {
+	public FieldsToCheck addField(String field, VerificationRule verificationRule) {
+		return addField(field, Lists.newArrayList(verificationRule));
+	}
+
+	public FieldsToCheck addField(String field, List<VerificationRule> verificationRules) {
 		ObjectFields fieldList = fieldsToCheck.get(currentKey);
 		if (fieldList == null) {
 			fieldList = new ObjectFields();
 			fieldsToCheck.put(currentKey, fieldList);
 		}
-		fieldList.addField(field, applicationRules);
+		fieldList.addField(field, verificationRules);
 		return this;
 	}
 
@@ -85,16 +91,16 @@ public class FieldsToCheck {
 		return field.isExcluded();
 	}
 
-	public boolean fieldHasValidatorOverrides(Class cls, String fieldName) {
+	public boolean fieldHasVerificationRules(Class cls, String fieldName) {
 		ObjectField field = getField(cls, fieldName);
 		if (field == null) return false;
-		return field.getApplicationRules() != null;
+		return field.getVerificationRules() != null;
 	}
 
-	public List<IVerificationRuleApplicationRule> getFieldValidatorParameters(Class cls, String fieldName) {
+	public List<VerificationRule> getFieldVerificationRules(Class cls, String fieldName) {
 		ObjectField field = getField(cls, fieldName);
 		if( field == null) return null;
-		return field.getApplicationRules();
+		return field.getVerificationRules();
 	}
 
 	private ObjectField getField(Class cls, String fieldName) {

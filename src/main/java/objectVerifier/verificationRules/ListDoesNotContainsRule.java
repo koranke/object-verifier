@@ -5,12 +5,13 @@ import objectVerifier.FieldsToCheck;
 import objectVerifier.applicationRules.ListApplicationRule;
 import objectVerifier.utilities.RulesHelper;
 import org.testng.Assert;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListContainsRule extends VerificationRule {
+public class ListDoesNotContainsRule extends VerificationRule {
 
-	public ListContainsRule() {
+	public ListDoesNotContainsRule() {
 		super(Lists.newArrayList(new ListApplicationRule()));
 	}
 
@@ -28,15 +29,17 @@ public class ListContainsRule extends VerificationRule {
 			for (Object actualItem : actual) {
 				for (VerificationRule childVerificationRule : childVerificationRules) {
 					try {
-						boolean ranCheck = childVerificationRule.verify(actualItem, expectedItem, fieldsToCheck, verificationRules,"");
+						boolean ranCheck = childVerificationRule.verify(actualItem, expectedItem, fieldsToCheck, verificationRules, "");
 						if (ranCheck) {
 							expectedItemFound = true;
 						}
-					} catch (AssertionError e) {	}
+					} catch (AssertionError e) {
+					}
 				}
 			}
-			Assert.assertTrue(expectedItemFound, String.format("%s%sFailed to find expected item %s in %s.",
+			Assert.assertFalse(expectedItemFound, String.format("%s%sFound unexpected item %s in %s.",
 					errorMessage, System.lineSeparator(), expectedItem, actual));
+
 		}
 	}
 }

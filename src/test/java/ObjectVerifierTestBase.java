@@ -1,5 +1,6 @@
-import supportingClasses.ParentThing;
-
 public class ObjectVerifierTestBase {
-	protected ParentThing actualFullyPopulatedParentThing = ParentThing.getPopulatedParent();
+
+	private ObjectVerifierTestBase() {
+//		RulesHelper.setCustomObjectPatterns(Lists.newArrayList("package rhapsody.qa", "package com.real", "package qa.rhapsody"));
+	}
 }

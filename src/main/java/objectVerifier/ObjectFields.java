@@ -1,6 +1,8 @@
 package objectVerifier;
 
 import objectVerifier.applicationRules.IVerificationRuleApplicationRule;
+import objectVerifier.verificationRules.VerificationRule;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,8 +42,8 @@ public class ObjectFields {
 		return this;
 	}
 
-	public ObjectFields addField(String field, List<IVerificationRuleApplicationRule> applicationRules) {
-		fields.add(new ObjectField().setFieldName(field).setApplicationRules(applicationRules));
+	public ObjectFields addField(String field, List<VerificationRule> verificationRules) {
+		fields.add(new ObjectField().setFieldName(field).setVerificationRules(verificationRules));
 		return this;
 	}
 

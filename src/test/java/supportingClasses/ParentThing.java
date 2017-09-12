@@ -18,6 +18,7 @@ public class ParentThing {
 	private Set<String> aliases;
 	private Map<Integer, String> codes;
 	private List<ChildThing> childThings;
+	private ChildThing specialChild;
 
 	public String getFirstName() {
 		return firstName;
@@ -127,6 +128,15 @@ public class ParentThing {
 		return this;
 	}
 
+	public ChildThing getSpecialChild() {
+		return specialChild;
+	}
+
+	public ParentThing setSpecialChild(ChildThing specialChild) {
+		this.specialChild = specialChild;
+		return this;
+	}
+
 	public static ParentThing getPopulatedParent() {
 		ParentThing parentThing = new ParentThing();
 		parentThing.age = 40;
@@ -149,6 +159,8 @@ public class ParentThing {
 		parentThing.childThings = new ArrayList<>();
 		parentThing.childThings.add(ChildThing.getPopulatedChildThing(22));
 		parentThing.childThings.add(ChildThing.getPopulatedChildThing(33));
+
+		parentThing.specialChild = ChildThing.getPopulatedChildThing(54);
 		return parentThing;
 	}
 }

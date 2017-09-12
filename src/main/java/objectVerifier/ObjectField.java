@@ -1,12 +1,11 @@
 package objectVerifier;
 
-import objectVerifier.applicationRules.IVerificationRuleApplicationRule;
-
+import objectVerifier.verificationRules.VerificationRule;
 import java.util.List;
 
 public class ObjectField {
 	private String fieldName;
-	private List<IVerificationRuleApplicationRule> applicationRules;
+	private List<VerificationRule> verificationRules;
 	private boolean excluded = false;
 
 	public String getFieldName() {
@@ -18,12 +17,12 @@ public class ObjectField {
 		return this;
 	}
 
-	public List<IVerificationRuleApplicationRule> getApplicationRules() {
-		return applicationRules;
+	public List<VerificationRule> getVerificationRules() {
+		return verificationRules;
 	}
 
-	public ObjectField setApplicationRules(List<IVerificationRuleApplicationRule> applicationRules) {
-		this.applicationRules = applicationRules;
+	public ObjectField setVerificationRules(List<VerificationRule> verificationRules) {
+		this.verificationRules = verificationRules;
 		return this;
 	}
 
