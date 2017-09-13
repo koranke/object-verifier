@@ -175,4 +175,22 @@ public class ObjectVerifierFieldsToCheckTest {
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
 
+	@Test
+	public void testFieldToCheckShortcut() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = new ParentThing().setAge(40);
+
+		Verify.that(actualThing).usingFields("age").isEqualTo(expectedThing);
+	}
+
+	@Test
+	public void testFieldToCheckShortcuts() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = new ParentThing()
+				.setAge(40)
+				.setFirstName("Joe");
+
+		Verify.that(actualThing).usingFields("age", "firstName").isEqualTo(expectedThing);
+	}
+
 }

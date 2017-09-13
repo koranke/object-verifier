@@ -1,7 +1,6 @@
 package objectVerifier;
 
 import com.google.common.collect.Lists;
-import objectVerifier.applicationRules.IVerificationRuleApplicationRule;
 import objectVerifier.verificationRules.VerificationRule;
 import org.testng.Assert;
 import java.util.HashMap;

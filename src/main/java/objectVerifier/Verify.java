@@ -59,6 +59,8 @@ public class Verify {
 	}
 
 	public Verify usingFields(String ... fieldsToCheck) {
+		this.fieldsToCheck = new FieldsToCheck();
+		this.fieldsToCheck.withKey(Object.class);
 		for (String fieldToCheck : fieldsToCheck) {
 			this.fieldsToCheck.addField(fieldToCheck);
 		}

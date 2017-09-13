@@ -207,6 +207,17 @@ FieldsToCheck fieldsToCheck = new FieldsToCheck()
 
 In the above example, all fields for Album will be checked, but only the "id" field will be checked for Track objects.
 
+Finally, there is a shortcut for adding fields.  If you don't need to specify the class key for the field, you
+can simply pass in the field names as string values in the Verify.that() method.  In this case, verification
+will run on any field that matches the name, regardless of the class that the field name is associated with.
+
+For example:
+
+```java
+Verify.that(actualTrack).usingFields("id", "releaseDate").isEqualTo(expectedTrack);
+```
+
+
 #### @Transient Annotation
 If you are working with a domain class that includes additional methods besides the
 standard getters and setters, and if any of those additional methods start with "get", the method must be

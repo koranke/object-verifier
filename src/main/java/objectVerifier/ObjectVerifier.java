@@ -55,11 +55,10 @@ public class ObjectVerifier {
 	}
 
 	private static Set<String> getRestrictedFieldList(Class<?> cls, FieldsToCheck fieldsToCheck) {
-		if (fieldsToCheck != null &&
-				fieldsToCheck.getFieldListForClass(cls) != null &&
-				fieldsToCheck.fieldListForClassIsRestricted(cls))  {
+		Class classToCheck = getClassToCheckForFields(fieldsToCheck, cls);
 
-			return new HashSet<>(fieldsToCheck.getFieldListForClass(cls));
+		if (classToCheck != null && fieldsToCheck != null && fieldsToCheck.fieldListForClassIsRestricted(classToCheck))  {
+			return new HashSet<>(fieldsToCheck.getFieldListForClass(classToCheck));
 		}
 		return new HashSet<>();
 	}
@@ -75,10 +74,26 @@ public class ObjectVerifier {
 				}
 			}
 
-			return fieldsToCheck == null || fieldsToCheck.getFieldListForClass(cls) == null ||
-					(fieldsToCheck.getFieldListForClass(cls).contains(currentField) && !fieldsToCheck.fieldIsExcluded(cls, currentField)) ||
-					(!fieldsToCheck.getFieldListForClass(cls).contains(currentField) && !fieldsToCheck.fieldListForClassIsRestricted(cls));
+			Class classToCheck = getClassToCheckForFields(fieldsToCheck, cls);
+			return fieldsToCheck == null ||
+					classToCheck == null ||
+					fieldsToCheck.getFieldListForClass(classToCheck) == null ||
+					(fieldsToCheck.getFieldListForClass(classToCheck).contains(currentField) && !fieldsToCheck.fieldIsExcluded(classToCheck, currentField)) ||
+					(!fieldsToCheck.getFieldListForClass(classToCheck).contains(currentField) && !fieldsToCheck.fieldListForClassIsRestricted(classToCheck));
 		}
+	}
+
+	private static Class getClassToCheckForFields(FieldsToCheck fieldsToCheck, Class currentClass) {
+		if (fieldsToCheck == null) {
+			return null;
+		}
+		Class classToCheck = null;
+		if (fieldsToCheck.getFieldListForClass(currentClass) != null) {
+			classToCheck = currentClass;
+		} else if (fieldsToCheck.getFieldListForClass(Object.class) != null) {
+			classToCheck = Object.class;
+		}
+		return classToCheck;
 	}
 
 	private static void verifyEquality(Class<?> domainObjectClass,
