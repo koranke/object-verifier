@@ -13,11 +13,11 @@ import java.util.Set;
 public class ObjectVerifier {
 
 	public static void verifyDomainObject(Class<?> domainObjectClass,
-									Object actualObject,
-									Object expectedObject,
-									FieldsToCheck fieldsToCheck,
-									List<VerificationRule> verificationRules,
-									String contextMessage) {
+										  Object actualObject,
+										  Object expectedObject,
+										  FieldsToCheck fieldsToCheck,
+										  List<VerificationRule> verificationRules,
+										  String contextMessage) {
 
 		if (actualObject == null && expectedObject == null) return;
 
@@ -37,7 +37,8 @@ public class ObjectVerifier {
 			String standardErrorMessage = getStandardErrorMessage(domainObjectClass, currentDataItemName, contextMessage);
 
 			if (thisFieldNeedsToBeChecked(fieldsToCheck, domainObjectClass, currentDataItemName, dataItemDescriptor)) {
-				verifyEquality(dataItemDescriptor, actualObject, expectedObject, fieldsToCheck, verificationRules, standardErrorMessage);
+				verifyEquality(domainObjectClass, dataItemDescriptor, actualObject, expectedObject, fieldsToCheck,
+						verificationRules, standardErrorMessage);
 			}
 		}
 		if (fieldsRemainingToCheck.size() > 0) {
@@ -80,7 +81,8 @@ public class ObjectVerifier {
 		}
 	}
 
-	private static void verifyEquality(PropertyDescriptor dataItemDescriptor,
+	private static void verifyEquality(Class<?> domainObjectClass,
+									   PropertyDescriptor dataItemDescriptor,
 									   Object objectUnderTest,
 									   Object comparisonObject,
 									   FieldsToCheck fieldsToCheck,
@@ -92,14 +94,18 @@ public class ObjectVerifier {
 
 		if (actualObject == null && expectedObject == null) return;
 		if (actualObject == null || expectedObject == null) {
-			Assert.fail(String.format("Data does not match.  %s is null. %s", errorMessage));
+			String nullItem = actualObject == null ? "Actual item" : "Expected item";
+			String nonnullItem = actualObject == null ? "Expected item" : "Actual item";
+			Object nonnullObject = actualObject == null ? expectedObject : actualObject;
+			Assert.fail(String.format("%s%sItems do not match.  %s is null.  %s is not null [%s].",
+					errorMessage, System.lineSeparator(), nullItem, nonnullItem, nonnullObject.toString()));
 		}
 
 		if (fieldsToCheck != null &&
-				fieldsToCheck.fieldHasVerificationRules(dataItemDescriptor.getPropertyType(), dataItemDescriptor.getDisplayName())) {
+				fieldsToCheck.fieldHasVerificationRules(domainObjectClass, dataItemDescriptor.getDisplayName())) {
 
 			verificationRules = RulesHelper.getMergedRules(
-					fieldsToCheck.getFieldVerificationRules(dataItemDescriptor.getPropertyType(), dataItemDescriptor.getDisplayName()),
+					fieldsToCheck.getFieldVerificationRules(domainObjectClass, dataItemDescriptor.getDisplayName()),
 					verificationRules
 			);
 		}
@@ -117,5 +123,4 @@ public class ObjectVerifier {
 			verificationRule.verify(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
 		}
 	}
-
 }

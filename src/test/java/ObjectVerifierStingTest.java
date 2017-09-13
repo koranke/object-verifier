@@ -1,6 +1,4 @@
-import com.google.common.collect.Lists;
-import objectVerifier.Assert;
-import objectVerifier.ObjectVerifier;
+import objectVerifier.Verify;
 import objectVerifier.verificationRules.StringContainsRule;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
@@ -15,7 +13,7 @@ public class ObjectVerifierStingTest {
 		ParentThing expectedThing = new ParentThing()
 				.setFirstName("Joe");
 
-		Assert.objectsAreEqual(actualThing, expectedThing);
+		Verify.that(actualThing).isEqualTo(expectedThing);
 	}
 
 	@Test(expectedExceptions = AssertionError.class)
@@ -26,7 +24,7 @@ public class ObjectVerifierStingTest {
 		ParentThing expectedThing = new ParentThing()
 				.setFirstName("John");
 
-		Assert.objectsAreEqual(actualThing, expectedThing);
+		Verify.that(actualThing).isEqualTo(expectedThing);
 	}
 
 	@Test
@@ -37,7 +35,7 @@ public class ObjectVerifierStingTest {
 		ParentThing expectedThing = new ParentThing()
 				.setFirstName("Joe");
 
-		Assert.objectsAreEqual(actualThing, expectedThing, Lists.newArrayList(new StringContainsRule()));
+		Verify.that(actualThing).usingRule(new StringContainsRule()).isEqualTo(expectedThing);
 	}
 
 	@Test(expectedExceptions = AssertionError.class)
@@ -48,7 +46,7 @@ public class ObjectVerifierStingTest {
 		ParentThing expectedThing = new ParentThing()
 				.setFirstName("Joe");
 
-		Assert.objectsAreEqual(actualThing, expectedThing, Lists.newArrayList(new StringContainsRule()));
+		Verify.that(actualThing).usingRule(new StringContainsRule()).isEqualTo(expectedThing);
 	}
 
 }

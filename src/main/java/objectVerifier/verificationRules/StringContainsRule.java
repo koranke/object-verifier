@@ -17,6 +17,7 @@ public class StringContainsRule extends VerificationRule {
 							 FieldsToCheck fieldsToCheck, List<VerificationRule> verificationRules, String errorMessage) {
 		String actual = (String) actualObject;
 		String expected = (String) expectedObject;
-		Assert.assertTrue(actual.contains(expected), String.format("Expected '%s' to contain '%s'.", actual, expected));
+		Assert.assertTrue(actual.contains(expected), String.format("%s%sExpected '%s' to contain '%s'.",
+				errorMessage, System.lineSeparator(), actual, expected));
 	}
 }

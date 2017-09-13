@@ -8,6 +8,7 @@ import java.util.List;
 
 public class ChildThing {
 	private String callSign;
+	private String quote;
 	private long[] idHistory;
 	private boolean isActive;
 	private int age;
@@ -22,6 +23,15 @@ public class ChildThing {
 
 	public ChildThing setCallSign(String callSign) {
 		this.callSign = callSign;
+		return this;
+	}
+
+	public String getQuote() {
+		return quote;
+	}
+
+	public ChildThing setQuote(String quote) {
+		this.quote = quote;
 		return this;
 	}
 
@@ -97,6 +107,7 @@ public class ChildThing {
 		childThing.favoriteNumbers = Lists.newArrayList(2, 4, 12, 44);
 		childThing.isActive = true;
 		childThing.callSign = "TrueBlue";
+		childThing.quote = "I invented the Internet.";
 		childThing.idHistory = new long[] { 132412342, 23452345, 7890 };
 
 		return childThing;

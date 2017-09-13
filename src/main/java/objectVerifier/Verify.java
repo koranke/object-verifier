@@ -10,7 +10,6 @@ public class Verify {
 	private Object expectedObject;
 	private FieldsToCheck fieldsToCheck;
 	private List<VerificationRule> verificationRules;
-	private String errorMessage;
 
 	public Object getActualObject() {
 		return actualObject;
@@ -48,15 +47,6 @@ public class Verify {
 		return this;
 	}
 
-	public String getErrorMessage() {
-		return errorMessage;
-	}
-
-	public Verify setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-		return this;
-	}
-
 	public static Verify that(Object actualObject) {
 		Verify verify = new Verify();
 		verify.actualObject = actualObject;
@@ -65,6 +55,13 @@ public class Verify {
 
 	public Verify usingFields(FieldsToCheck fieldsToCheck) {
 		this.fieldsToCheck = fieldsToCheck;
+		return this;
+	}
+
+	public Verify usingFields(String ... fieldsToCheck) {
+		for (String fieldToCheck : fieldsToCheck) {
+			this.fieldsToCheck.addField(fieldToCheck);
+		}
 		return this;
 	}
 
@@ -90,7 +87,7 @@ public class Verify {
 					expectedObject,
 					fieldsToCheck,
 					verificationRules,
-					errorMessage);
+					null);
 		} else {
 			ObjectVerifier.verifyDomainObject(
 					actualObject.getClass(),
@@ -98,7 +95,7 @@ public class Verify {
 					expectedObject,
 					fieldsToCheck,
 					verificationRules,
-					errorMessage);
+					null);
 		}
 	}
 

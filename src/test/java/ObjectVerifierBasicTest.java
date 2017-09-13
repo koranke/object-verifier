@@ -1,4 +1,5 @@
 import objectVerifier.ObjectVerifier;
+import objectVerifier.Verify;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
@@ -12,12 +13,6 @@ public class ObjectVerifierBasicTest {
 		ParentThing expectedThing = new ParentThing()
 				.setFirstName("Joe");
 
-		ObjectVerifier.verifyDomainObject(
-				ParentThing.class,
-				actualThing,
-				expectedThing,
-				null,
-				null,
-				"");
+		Verify.that(actualThing).isEqualTo(expectedThing);
 	}
 }
