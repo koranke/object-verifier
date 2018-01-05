@@ -16,7 +16,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -31,7 +31,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -46,7 +46,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -61,7 +61,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -77,7 +77,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -93,7 +93,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -109,7 +109,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -125,7 +125,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -141,7 +141,7 @@ public class ObjectVerifierListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("favoriteWords");
+				.includeField("favoriteWords");
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)

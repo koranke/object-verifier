@@ -12,7 +12,7 @@ public class ObjectVerifierCustomObjectTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("specialChild");
+				.includeField("specialChild");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
@@ -25,7 +25,7 @@ public class ObjectVerifierCustomObjectTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("specialChild");
+				.includeField("specialChild");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}

@@ -51,8 +51,8 @@ It also contains a list of String. Only two fields need to be tested.
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Track.class)
-				.addField("trackId")
-				.addField("trackTitle");
+				.includeField("trackId")
+				.includeField("trackTitle");
 
 Verify.that(actualTrack).usingFields(fieldsToCheck).isEqualTo(expectedTrack)
 ```
@@ -113,7 +113,7 @@ Also note that the verification rule is attached to the field, so default matchi
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Track.class)
-				.addField("listOfStringUnsorted", new ListUnsortedRule())
+				.includeField("listOfStringUnsorted", new ListUnsortedRule())
 				.checkAllFieldsForCurrentKey();
 
 Verify.that(actualTrack)
@@ -143,7 +143,7 @@ FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Album.class)
 				.excludeField("id")
 				.withKey(Track.class)
-				.addField("id");
+				.includeField("id");
 
 Verify.that(actualTrack)
 		.usingFields(fieldsToCheck)
@@ -185,7 +185,7 @@ FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Album.class)
 				.excludeField("id")
 				.withKey(Track.class)
-				.addField("id");
+				.includeField("id");
 ```
 
 In the above example, all fields in the Album object will be checked except for the "id" field.  The Album object contains
@@ -199,10 +199,10 @@ For example:
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Album.class)
-				.addField("releaseDate", new DateTimeInRangeRule(5, ChronoUnit.MINUTES))
+				.includeField("releaseDate", new DateTimeInRangeRule(5, ChronoUnit.MINUTES))
 				.checkAllFieldsForCurrentKey()
 				.withKey(Track.class)
-				.addField("id");
+				.includeField("id");
 ```
 
 In the above example, all fields for Album will be checked, but only the "id" field will be checked for Track objects.

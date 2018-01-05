@@ -18,7 +18,7 @@ public class FieldsToCheck {
 
 	public FieldsToCheck checkAllFieldsForCurrentKey() {
 		if (fieldsToCheck.containsKey(currentKey)) {
-			fieldsToCheck.get(currentKey).setOnlyCheckAddedFields(false);
+			fieldsToCheck.get(currentKey).setCheckIncludedFieldsOnly(false);
 		} else {
 			Assert.fail(String.format("Unable to set checkAllFieldsForCurrentKey.  Key %s does not exist yet.  Call this method after adding fields for key.", currentKey));
 		}
@@ -27,14 +27,14 @@ public class FieldsToCheck {
 
 	public FieldsToCheck checkOnlyAddedFieldsForCurrentKey() {
 		if (fieldsToCheck.containsKey(currentKey)) {
-			fieldsToCheck.get(currentKey).setOnlyCheckAddedFields(true);
+			fieldsToCheck.get(currentKey).setCheckIncludedFieldsOnly(true);
 		} else {
 			Assert.fail(String.format("Unable to set checkOnlyAddedFieldsForCurrentKey.  Key %s does not exist yet.  Call this method after adding fields for key.", currentKey));
 		}
 		return this;
 	}
 
-	public FieldsToCheck addField(String field) {
+	public FieldsToCheck includeField(String field) {
 		ObjectFields fieldList = fieldsToCheck.get(currentKey);
 		if (fieldList == null) {
 			fieldList = new ObjectFields();
@@ -44,11 +44,11 @@ public class FieldsToCheck {
 		return this;
 	}
 
-	public FieldsToCheck addField(String field, VerificationRule verificationRule) {
-		return addField(field, Lists.newArrayList(verificationRule));
+	public FieldsToCheck includeField(String field, VerificationRule verificationRule) {
+		return includeField(field, Lists.newArrayList(verificationRule));
 	}
 
-	public FieldsToCheck addField(String field, List<VerificationRule> verificationRules) {
+	public FieldsToCheck includeField(String field, List<VerificationRule> verificationRules) {
 		ObjectFields fieldList = fieldsToCheck.get(currentKey);
 		if (fieldList == null) {
 			fieldList = new ObjectFields();
@@ -79,7 +79,7 @@ public class FieldsToCheck {
 
 	public boolean fieldListForClassIsRestricted(Class<?> cls) {
 		if (fieldsToCheck.containsKey(cls)) {
-			return fieldsToCheck.get(cls).isOnlyCheckAddedFields();
+			return fieldsToCheck.get(cls).isCheckIncludedFieldsOnly();
 		}
 		return false;
 	}

@@ -62,7 +62,7 @@ public class Verify {
 		this.fieldsToCheck = new FieldsToCheck();
 		this.fieldsToCheck.withKey(Object.class);
 		for (String fieldToCheck : fieldsToCheck) {
-			this.fieldsToCheck.addField(fieldToCheck);
+			this.fieldsToCheck.includeField(fieldToCheck);
 		}
 		return this;
 	}

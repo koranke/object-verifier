@@ -1,21 +1,20 @@
 package objectVerifier;
 
-import objectVerifier.applicationRules.IVerificationRuleApplicationRule;
 import objectVerifier.verificationRules.VerificationRule;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ObjectFields {
-	private boolean onlyCheckAddedFields = true;
+	private boolean onlyCheckIncludedFields = true;
 	private List<ObjectField> fields = new ArrayList<>();
 
-	public boolean isOnlyCheckAddedFields() {
-		return onlyCheckAddedFields;
+	public boolean isCheckIncludedFieldsOnly() {
+		return onlyCheckIncludedFields;
 	}
 
-	public ObjectFields setOnlyCheckAddedFields(boolean onlyCheckAddedFields) {
-		this.onlyCheckAddedFields = onlyCheckAddedFields;
+	public ObjectFields setCheckIncludedFieldsOnly(boolean onlyCheckIncludedFields) {
+		this.onlyCheckIncludedFields = onlyCheckIncludedFields;
 		return this;
 	}
 

@@ -66,7 +66,7 @@ public class ObjectVerifierFieldsToCheckTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("age");
+				.includeField("age");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
@@ -78,7 +78,7 @@ public class ObjectVerifierFieldsToCheckTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ChildThing.class)
-				.addField("age");
+				.includeField("age");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
@@ -90,8 +90,8 @@ public class ObjectVerifierFieldsToCheckTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("age")
-				.addField("firstName");
+				.includeField("age")
+				.includeField("firstName");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
@@ -106,10 +106,10 @@ public class ObjectVerifierFieldsToCheckTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("age")
-				.addField("specialChild")
+				.includeField("age")
+				.includeField("specialChild")
 				.withKey(ChildThing.class)
-				.addField("callSign");
+				.includeField("callSign");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
@@ -123,10 +123,10 @@ public class ObjectVerifierFieldsToCheckTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("age")
-				.addField("specialChild")
+				.includeField("age")
+				.includeField("specialChild")
 				.withKey(ChildThing.class)
-				.addField("callSign");
+				.includeField("callSign");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
@@ -144,11 +144,11 @@ public class ObjectVerifierFieldsToCheckTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("age")
-				.addField("specialChild")
+				.includeField("age")
+				.includeField("specialChild")
 				.withKey(ChildThing.class)
-				.addField("callSign", new StringContainsRule())
-				.addField("quote");
+				.includeField("callSign", new StringContainsRule())
+				.includeField("quote");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
@@ -166,11 +166,11 @@ public class ObjectVerifierFieldsToCheckTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.addField("age")
-				.addField("specialChild")
+				.includeField("age")
+				.includeField("specialChild")
 				.withKey(ChildThing.class)
-				.addField("callSign", new StringContainsRule())
-				.addField("quote");
+				.includeField("callSign", new StringContainsRule())
+				.includeField("quote");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
 	}
