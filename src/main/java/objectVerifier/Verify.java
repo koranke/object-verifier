@@ -83,6 +83,7 @@ public class Verify {
 		boolean isListComparison = (actualObject != null && ObjectHelper.isList(actualObject.getClass()))
 				|| (expectedObject != null && ObjectHelper.isList(expectedObject.getClass()));
 
+		//TODO: we need to add support for maps and sets
 		if (isListComparison) {
 			ObjectVerifier.verifyObject(
 					actualObject,

@@ -1,5 +1,6 @@
 package objectVerifier;
 
+import objectVerifier.utilities.ObjectHelper;
 import objectVerifier.utilities.RulesHelper;
 import objectVerifier.utilities.IntrospectionHelper;
 import objectVerifier.verificationRules.*;
@@ -134,8 +135,16 @@ public class ObjectVerifier {
 										List<VerificationRule> verificationRules,
 										String errorMessage) {
 
-		for (VerificationRule verificationRule : verificationRules) {
-			verificationRule.verify(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
+
+		if (RulesHelper.verificationRuleExistsForObjectDataType(actualObject, expectedObject, verificationRules)) {
+			for (VerificationRule verificationRule : verificationRules) {
+				verificationRule.verify(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
+			}
+		} else if (ObjectHelper.implementsEquals(actualObject.getClass())) {
+			Assert.assertEquals(actualObject, expectedObject, String.format("%s\nDefault equality assertion failed.\n", errorMessage));
+		} else {
+			Assert.fail(String.format("%s\nUnable to verify object.  No verification rules apply for this data type and " +
+					"the object does not implement the equals() method.\n", errorMessage));
 		}
 	}
 }

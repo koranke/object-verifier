@@ -1,5 +1,6 @@
 import objectVerifier.Verify;
 import objectVerifier.verificationRules.StringContainsRule;
+import objectVerifier.verificationRules.StringExactMatchRule;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
@@ -25,6 +26,28 @@ public class ObjectVerifierStingTest {
 				.setFirstName("John");
 
 		Verify.that(actualThing).isEqualTo(expectedThing);
+	}
+
+	@Test
+	public void testExactMatchCaseInsensitive() {
+		ParentThing actualThing = new ParentThing()
+				.setFirstName("Joe");
+
+		ParentThing expectedThing = new ParentThing()
+				.setFirstName("joe");
+
+		Verify.that(actualThing).usingRule(new StringExactMatchRule(true)).isEqualTo(expectedThing);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testExactMatchCaseInsensitiveFail() {
+		ParentThing actualThing = new ParentThing()
+				.setFirstName("Joe");
+
+		ParentThing expectedThing = new ParentThing()
+				.setFirstName("john");
+
+		Verify.that(actualThing).usingRule(new StringExactMatchRule(true)).isEqualTo(expectedThing);
 	}
 
 	@Test
