@@ -1,6 +1,6 @@
 package objectVerifier.applicationRules;
 
-public class StringApplicationRule implements IVerificationRuleApplicationRule {
+public class StringApplicationRule implements IApplicationRule {
 
 	public boolean dataIsApplicable(Object actualObject, Object expectedObject) {
 		if (actualObject != null) {

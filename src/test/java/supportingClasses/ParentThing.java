@@ -1,7 +1,6 @@
 package supportingClasses;
 
 import com.google.common.collect.Lists;
-
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -19,6 +18,12 @@ public class ParentThing {
 	private Map<Integer, String> codes;
 	private List<ChildThing> childThings;
 	private ChildThing specialChild;
+	private byte aNativeByte;
+	private long aNativeLong;
+	private short aNativeShort;
+	private double aNativeDouble;
+	private float aNativeFloat;
+	private char aNativeChar;
 
 	public String getFirstName() {
 		return firstName;
@@ -137,6 +142,60 @@ public class ParentThing {
 		return this;
 	}
 
+	public byte getaNativeByte() {
+		return aNativeByte;
+	}
+
+	public ParentThing setaNativeByte(byte aNativeByte) {
+		this.aNativeByte = aNativeByte;
+		return this;
+	}
+
+	public long getaNativeLong() {
+		return aNativeLong;
+	}
+
+	public ParentThing setaNativeLong(long aNativeLong) {
+		this.aNativeLong = aNativeLong;
+		return this;
+	}
+
+	public short getaNativeShort() {
+		return aNativeShort;
+	}
+
+	public ParentThing setaNativeShort(short aNativeShort) {
+		this.aNativeShort = aNativeShort;
+		return this;
+	}
+
+	public double getaNativeDouble() {
+		return aNativeDouble;
+	}
+
+	public ParentThing setaNativeDouble(double aNativeDouble) {
+		this.aNativeDouble = aNativeDouble;
+		return this;
+	}
+
+	public float getaNativeFloat() {
+		return aNativeFloat;
+	}
+
+	public ParentThing setaNativeFloat(float aNativeFloat) {
+		this.aNativeFloat = aNativeFloat;
+		return this;
+	}
+
+	public char getaNativeChar() {
+		return aNativeChar;
+	}
+
+	public ParentThing setaNativeChar(char aNativeChar) {
+		this.aNativeChar = aNativeChar;
+		return this;
+	}
+
 	public static ParentThing getPopulatedParent() {
 		ParentThing parentThing = new ParentThing();
 		parentThing.age = 40;
@@ -159,8 +218,15 @@ public class ParentThing {
 		parentThing.childThings = new ArrayList<>();
 		parentThing.childThings.add(ChildThing.getPopulatedChildThing(22));
 		parentThing.childThings.add(ChildThing.getPopulatedChildThing(33));
-
 		parentThing.specialChild = ChildThing.getPopulatedChildThing(54);
+
+		parentThing.setaNativeByte((byte) 2);
+		parentThing.setaNativeShort((short) 400);
+		parentThing.setaNativeLong(9888777666L);
+		parentThing.setaNativeDouble(144.5d);
+		parentThing.setaNativeFloat(144.512341234f);
+		parentThing.setaNativeChar('c');
+
 		return parentThing;
 	}
 }

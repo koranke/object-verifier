@@ -1,22 +1,10 @@
-import objectVerifier.ObjectVerifier;
-import objectVerifier.Verify;
-import org.testng.Assert;
+package objectVerifier;
+
 import org.testng.annotations.Test;
 import supportingClasses.ChildThing;
 import supportingClasses.ParentThing;
 
 public class BasicTest {
-
-
-	@Test
-	public void testLiteralString() {
-		Verify.that("this").isEqualTo("this");
-	}
-
-	@Test(expectedExceptions = AssertionError.class)
-	public void testLiteralStringFail() {
-		Verify.that("this").isEqualTo("that");
-	}
 
 	@Test
 	public void testAllNull() {
@@ -70,30 +58,12 @@ public class BasicTest {
 		Verify.that(actualThing).isEqualTo(expectedThing);
 	}
 
-	@Test
-	public void testBasicInteger() {
-		ParentThing actualThing = new ParentThing()
-				.setFirstName("Joe")
-				.setAge(10);
-
-		ParentThing expectedThing = new ParentThing()
-				.setFirstName("Joe")
-				.setAge(10);
-
-		Verify.that(actualThing).isEqualTo(expectedThing);
-	}
-
 	@Test(expectedExceptions = AssertionError.class)
-	public void testBasicIntegerFail() {
-		ParentThing actualThing = new ParentThing()
-				.setFirstName("Joe")
-				.setAge(10);
+	public void testInvalidField() {
+		ParentThing actualThing = new ParentThing().setFirstName("Jack");
+		ParentThing expectedThing = new ParentThing().setFirstName("Jack");
 
-		ParentThing expectedThing = new ParentThing()
-				.setFirstName("Joe")
-				.setAge(11);
-
-		Verify.that(actualThing).isEqualTo(expectedThing);
+		Verify.that(actualThing).usingFields("fistNam").isEqualTo(expectedThing);
 	}
 
 }

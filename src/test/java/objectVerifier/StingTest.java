@@ -1,10 +1,22 @@
-import objectVerifier.Verify;
+package objectVerifier;
+
 import objectVerifier.verificationRules.StringContainsRule;
 import objectVerifier.verificationRules.StringExactMatchRule;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
 public class StingTest {
+
+	@Test
+	public void testLiteralString() {
+		Verify.that("this").isEqualTo("this");
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testLiteralStringFail() {
+		Verify.that("this").isEqualTo("that");
+	}
+
 
 	@Test
 	public void testExactMatch() {

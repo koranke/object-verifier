@@ -2,7 +2,7 @@ package objectVerifier.applicationRules;
 
 import objectVerifier.utilities.ObjectHelper;
 
-public class MapApplicationRule implements IVerificationRuleApplicationRule {
+public class MapApplicationRule implements IApplicationRule {
 
 	public boolean dataIsApplicable(Object actualObject, Object expectedObject) {
 		if (actualObject != null) {

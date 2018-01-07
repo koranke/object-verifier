@@ -1,9 +1,12 @@
+package objectVerifier;
+
 import com.google.common.collect.Lists;
 import objectVerifier.FieldsToCheck;
 import objectVerifier.Verify;
 import objectVerifier.verificationRules.ListContainsRule;
 import objectVerifier.verificationRules.ListDoesNotContainsRule;
 import objectVerifier.verificationRules.StringExactMatchRule;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
@@ -182,5 +185,39 @@ public class ListTest {
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
 				.isEqualTo(expectedThing);
+	}
+
+	@Test
+	public void testWithArray() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = ParentThing.getPopulatedParent();
+
+		Verify.that(actualThing).usingFields("favoriteColors").isEqualTo(expectedThing);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testWithArrayFail() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = ParentThing.getPopulatedParent();
+		expectedThing.getFavoriteColors()[0] = "pinkish blue";
+
+		Verify.that(actualThing).usingFields("favoriteColors").isEqualTo(expectedThing);
+	}
+
+	@Test
+	public void testWithSet() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = ParentThing.getPopulatedParent();
+
+		Verify.that(actualThing).usingFields("aliases").isEqualTo(expectedThing);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testWithSetFail() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = ParentThing.getPopulatedParent();
+		expectedThing.getAliases().add("The Dude");
+
+		Verify.that(actualThing).usingFields("aliases").isEqualTo(expectedThing);
 	}
 }

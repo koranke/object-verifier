@@ -1,7 +1,7 @@
 package objectVerifier.utilities;
 
 import com.google.common.collect.Lists;
-import objectVerifier.applicationRules.IVerificationRuleApplicationRule;
+import objectVerifier.applicationRules.IApplicationRule;
 import objectVerifier.verificationRules.*;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class RulesHelper {
 			return false;
 		}
 		for (VerificationRule rule : rules) {
-			for (IVerificationRuleApplicationRule applicationRule : rule.getApplicationRules()) {
+			for (IApplicationRule applicationRule : rule.getApplicationRules()) {
 				if (applicationRule.dataIsApplicable(actualObject, expectedObject)) {
 					return true;
 				}
@@ -57,11 +57,11 @@ public class RulesHelper {
 	}
 
 	private static boolean matchingApplicationRuleFound(
-			List<IVerificationRuleApplicationRule> ruleList1,
-			List<IVerificationRuleApplicationRule> ruleList2) {
+			List<IApplicationRule> ruleList1,
+			List<IApplicationRule> ruleList2) {
 
-		for (IVerificationRuleApplicationRule ruleFromList1 : ruleList1) {
-			for (IVerificationRuleApplicationRule ruleFromList2 : ruleList2) {
+		for (IApplicationRule ruleFromList1 : ruleList1) {
+			for (IApplicationRule ruleFromList2 : ruleList2) {
 				if (ruleFromList1.getClass() == ruleFromList2.getClass()) {
 					return true;
 				}

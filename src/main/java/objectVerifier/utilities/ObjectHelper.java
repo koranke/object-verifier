@@ -20,19 +20,6 @@ public class ObjectHelper {
 		return false;
 	}
 
-	private static boolean isComparable(Class<?> cls) {
-		if (cls == null) {
-			return false;
-		}
-		Class<?>[] classes = cls.getInterfaces();
-		for (Class<?> currentClass : classes){
-			if (currentClass == java.lang.Comparable.class) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	public static boolean isArray(Class<?> cls) {
 		if (cls == null) {
 			return false;
@@ -89,6 +76,7 @@ public class ObjectHelper {
 		}
 	}
 
+	//TODO: this will fail if the object is an array of native data type.  need to fix to handle that situation.
 	public static Class<?> getClassForArray(Object object) {
 		if (object == null) {
 			return null;

@@ -2,7 +2,7 @@ package objectVerifier.applicationRules;
 
 import objectVerifier.utilities.ObjectHelper;
 
-public class DateApplicationRule implements IVerificationRuleApplicationRule {
+public class DateApplicationRule implements IApplicationRule {
 
 	public boolean dataIsApplicable(Object actualObject, Object expectedObject) {
 		if (actualObject != null) {

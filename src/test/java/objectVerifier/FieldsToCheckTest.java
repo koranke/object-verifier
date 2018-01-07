@@ -1,5 +1,5 @@
-import objectVerifier.FieldsToCheck;
-import objectVerifier.Verify;
+package objectVerifier;
+
 import objectVerifier.verificationRules.StringContainsRule;
 import org.testng.annotations.Test;
 import supportingClasses.ChildThing;

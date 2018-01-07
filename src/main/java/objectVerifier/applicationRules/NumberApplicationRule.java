@@ -1,8 +1,6 @@
 package objectVerifier.applicationRules;
 
-import objectVerifier.utilities.ObjectHelper;
-
-public class NumberApplicationRule implements IVerificationRuleApplicationRule {
+public class NumberApplicationRule implements IApplicationRule {
 
 	public boolean dataIsApplicable(Object actualObject, Object expectedObject) {
 		if (actualObject != null) {

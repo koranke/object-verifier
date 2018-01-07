@@ -1,5 +1,5 @@
 package objectVerifier.applicationRules;
 
-public interface IVerificationRuleApplicationRule {
+public interface IApplicationRule {
 	public boolean dataIsApplicable(Object actualObject, Object expectedObject);
 }

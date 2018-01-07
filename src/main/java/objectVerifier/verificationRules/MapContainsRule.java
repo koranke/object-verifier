@@ -6,11 +6,14 @@ import objectVerifier.ObjectVerifier;
 import objectVerifier.applicationRules.MapApplicationRule;
 import org.testng.Assert;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-public class MapExactMatchRule extends VerificationRule {
+public class MapContainsRule extends VerificationRule {
 
-	public MapExactMatchRule() {
+	public MapContainsRule() {
 		super(Lists.newArrayList(new MapApplicationRule()));
 	}
 
@@ -21,8 +24,8 @@ public class MapExactMatchRule extends VerificationRule {
 		Map<?, ?> expected = new HashMap<>();
 		expected.putAll((Map)expectedObject);
 
-		Assert.assertEquals(actual.size(), expected.size(),
-				String.format("%s%sActual map size doesn't match expected map size.", errorMessage, System.lineSeparator()));
+		Assert.assertTrue(actual.size() >= expected.size(),
+				String.format("%s%sActual map size less than expected map size.", errorMessage, System.lineSeparator()));
 
 		Iterator iterator = expected.keySet().iterator();
 		while (iterator.hasNext()) {
@@ -31,8 +34,6 @@ public class MapExactMatchRule extends VerificationRule {
 					errorMessage, System.lineSeparator(), key.toString(), actual.toString()));
 			Object actualMapObject = actual.get(key);
 			Object expectedMapObject = expected.get(key);
-
-			errorMessage += String.format("\nKey: %s", key.toString());
 
 			ObjectVerifier.verifyObject(actualMapObject, expectedMapObject, fieldsToCheck, verificationRules, errorMessage);
 		}

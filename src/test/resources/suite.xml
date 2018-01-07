@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="suite" parallel="methods" thread-count="15" verbose="2">
+    <test name="object-verifier">
+        <packages>
+            <package name="objectVerifier" />
+        </packages>
+    </test>
+</suite>
