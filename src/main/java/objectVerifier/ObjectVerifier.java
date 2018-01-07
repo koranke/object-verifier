@@ -13,32 +13,51 @@ import java.util.Set;
 
 public class ObjectVerifier {
 
-	public static void verifyDomainObject(Class<?> domainObjectClass,
-										  Object actualObject,
+	public static void verifyObject(Object actualObject,
+									Object expectedObject,
+									FieldsToCheck fieldsToCheck,
+									List<VerificationRule> verificationRules,
+									String errorMessage) {
+
+		if (actualObject == null && expectedObject == null) {
+			return;
+		}
+		checkIfEitherObjectIsNull(actualObject, expectedObject, errorMessage);
+		checkThatClassesMatch(actualObject, expectedObject, errorMessage);
+
+		if (RulesHelper.verificationRuleExistsForObjectDataType(actualObject, expectedObject, verificationRules)) {
+			for (VerificationRule verificationRule : verificationRules) {
+				verificationRule.verify(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
+			}
+		} else if (ObjectHelper.implementsEquals(actualObject.getClass()) || ObjectHelper.implementsEquals(expectedObject.getClass())) {
+			Assert.assertEquals(actualObject, expectedObject, String.format("%s\nDefault equality assertion failed.\n", errorMessage));
+		} else {
+			verifyDomainObject(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
+		}
+	}
+
+	public static void verifyDomainObject(Object actualObject,
 										  Object expectedObject,
 										  FieldsToCheck fieldsToCheck,
 										  List<VerificationRule> verificationRules,
 										  String contextMessage) {
 
 		if (actualObject == null && expectedObject == null) return;
-
-		if (actualObject == null || expectedObject == null) {
-			String msg = String.format("Verification failed for object %s.", domainObjectClass.getSimpleName());
-			msg += actualObject == null ? " Actual object is null." : "Actual object is not null.";
-			Assert.fail(msg);
-		}
+		checkIfEitherObjectIsNull(actualObject, expectedObject, contextMessage);
+		checkThatClassesMatch(actualObject, expectedObject, contextMessage);
+		Class<?> objectClass = actualObject.getClass();
 
 		verificationRules = RulesHelper.setRulesToDefaultValuesIfNotSet(verificationRules);
-		Set<String> fieldsRemainingToCheck = getRestrictedFieldList(domainObjectClass, fieldsToCheck);
-		PropertyDescriptor[] dataItemDescriptors = IntrospectionHelper.getPropertyDescriptors(domainObjectClass);
+		Set<String> fieldsRemainingToCheck = getRestrictedFieldList(objectClass, fieldsToCheck);
+		PropertyDescriptor[] dataItemDescriptors = IntrospectionHelper.getPropertyDescriptors(objectClass);
 
 		for (PropertyDescriptor dataItemDescriptor : dataItemDescriptors) {
 			String currentDataItemName = dataItemDescriptor.getName();
 			fieldsRemainingToCheck.remove(currentDataItemName);
-			String standardErrorMessage = getStandardErrorMessage(domainObjectClass, currentDataItemName, contextMessage);
+			String standardErrorMessage = getStandardErrorMessage(objectClass, currentDataItemName, contextMessage);
 
-			if (thisFieldNeedsToBeChecked(fieldsToCheck, domainObjectClass, currentDataItemName, dataItemDescriptor)) {
-				verifyEquality(domainObjectClass, dataItemDescriptor, actualObject, expectedObject, fieldsToCheck,
+			if (thisFieldNeedsToBeChecked(fieldsToCheck, objectClass, currentDataItemName, dataItemDescriptor)) {
+				verifyEquality(objectClass, dataItemDescriptor, actualObject, expectedObject, fieldsToCheck,
 						verificationRules, standardErrorMessage);
 			}
 		}
@@ -109,13 +128,8 @@ public class ObjectVerifier {
 		Object expectedObject = IntrospectionHelper.getGetterResult(dataItemDescriptor, comparisonObject);
 
 		if (actualObject == null && expectedObject == null) return;
-		if (actualObject == null || expectedObject == null) {
-			String nullItem = actualObject == null ? "Actual item" : "Expected item";
-			String nonnullItem = actualObject == null ? "Expected item" : "Actual item";
-			Object nonnullObject = actualObject == null ? expectedObject : actualObject;
-			Assert.fail(String.format("%s%sItems do not match.  %s is null.  %s is not null [%s].",
-					errorMessage, System.lineSeparator(), nullItem, nonnullItem, nonnullObject.toString()));
-		}
+		checkIfEitherObjectIsNull(actualObject, expectedObject, errorMessage);
+		checkThatClassesMatch(actualObject, expectedObject, errorMessage);
 
 		if (fieldsToCheck != null &&
 				fieldsToCheck.fieldHasVerificationRules(domainObjectClass, dataItemDescriptor.getDisplayName())) {
@@ -129,22 +143,20 @@ public class ObjectVerifier {
 		verifyObject(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
 	}
 
-	public static void verifyObject(Object actualObject,
-										Object expectedObject,
-										FieldsToCheck fieldsToCheck,
-										List<VerificationRule> verificationRules,
-										String errorMessage) {
-
-
-		if (RulesHelper.verificationRuleExistsForObjectDataType(actualObject, expectedObject, verificationRules)) {
-			for (VerificationRule verificationRule : verificationRules) {
-				verificationRule.verify(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
-			}
-		} else if (ObjectHelper.implementsEquals(actualObject.getClass())) {
-			Assert.assertEquals(actualObject, expectedObject, String.format("%s\nDefault equality assertion failed.\n", errorMessage));
-		} else {
-			Assert.fail(String.format("%s\nUnable to verify object.  No verification rules apply for this data type and " +
-					"the object does not implement the equals() method.\n", errorMessage));
+	private static void checkIfEitherObjectIsNull(Object actualObject, Object expectedObject, String errorMessage) {
+		if (actualObject == null || expectedObject == null) {
+			String nullItem = actualObject == null ? "Actual item" : "Expected item";
+			String nonnullItem = actualObject == null ? "Expected item" : "Actual item";
+			Object nonnullObject = actualObject == null ? expectedObject : actualObject;
+			Assert.fail(String.format("%s%sItems do not match.  %s is null.  %s is not null [%s].",
+					errorMessage, System.lineSeparator(), nullItem, nonnullItem, nonnullObject.toString()));
 		}
+	}
+
+	private static void checkThatClassesMatch(Object actualObject, Object expectedObject, String errorMessage) {
+		Assert.assertEquals(actualObject.getClass(), expectedObject.getClass(),
+				String.format("%s\nUnable to compare objects as they are different classes.  Actual object is of type %s." +
+						" Expected object is of type %s.\n", errorMessage, actualObject.getClass().getSimpleName(),
+						expectedObject.getClass().getSimpleName()));
 	}
 }

@@ -3,10 +3,13 @@ import objectVerifier.FieldsToCheck;
 import objectVerifier.Verify;
 import objectVerifier.verificationRules.ListContainsRule;
 import objectVerifier.verificationRules.ListDoesNotContainsRule;
+import objectVerifier.verificationRules.StringExactMatchRule;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
-public class ObjectVerifierListTest {
+import java.util.stream.Collectors;
+
+public class ListTest {
 
 	@Test
 	public void testListExactMatch() {
@@ -149,4 +152,35 @@ public class ObjectVerifierListTest {
 				.isEqualTo(expectedThing);
 	}
 
+	@Test
+	public void testListExactMatchStringCaseInsensitiveForListOnly() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = new ParentThing()
+				.setFavoriteWords(actualThing.getFavoriteWords().stream().map(item->item.toUpperCase()).collect(Collectors.toList()));
+
+		FieldsToCheck fieldsToCheck = new FieldsToCheck()
+				.withKey(ParentThing.class)
+				.includeField("favoriteWords", new StringExactMatchRule(true));
+
+		Verify.that(actualThing)
+				.usingFields(fieldsToCheck)
+				.isEqualTo(expectedThing);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testFieldSpecificRuleForListDoesNotOverrideGlobalRuleForOtherItems() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = new ParentThing()
+				.setFavoriteWords(actualThing.getFavoriteWords().stream().map(item->item.toUpperCase()).collect(Collectors.toList()))
+				.setFirstName(actualThing.getFirstName().toUpperCase());
+
+		FieldsToCheck fieldsToCheck = new FieldsToCheck()
+				.withKey(ParentThing.class)
+				.includeField("firstName")
+				.includeField("favoriteWords", new StringExactMatchRule(true));
+
+		Verify.that(actualThing)
+				.usingFields(fieldsToCheck)
+				.isEqualTo(expectedThing);
+	}
 }

@@ -4,7 +4,7 @@ import objectVerifier.verificationRules.StringExactMatchRule;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
-public class ObjectVerifierStingTest {
+public class StingTest {
 
 	@Test
 	public void testExactMatch() {

@@ -3,7 +3,7 @@ import objectVerifier.Verify;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
-public class ObjectVerifierCustomObjectTest {
+public class CustomObjectTest {
 
 	@Test
 	public void testBasicMatch() {

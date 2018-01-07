@@ -39,11 +39,13 @@ public class RulesHelper {
 		defaultRules.add(new DateTimeInRangeRule(5, ChronoUnit.MINUTES ));
 		defaultRules.add(new ListExactMatchRule());
 		defaultRules.add(new MapExactMatchRule());
-		defaultRules.add(new CustomObjectMatchRule());
 		return defaultRules;
 	}
 
 	public static boolean verificationRuleExistsForObjectDataType(Object actualObject, Object expectedObject, List<VerificationRule> rules) {
+		if (rules == null) {
+			return false;
+		}
 		for (VerificationRule rule : rules) {
 			for (IVerificationRuleApplicationRule applicationRule : rule.getApplicationRules()) {
 				if (applicationRule.dataIsApplicable(actualObject, expectedObject)) {

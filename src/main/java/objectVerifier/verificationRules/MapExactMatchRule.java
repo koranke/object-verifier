@@ -2,9 +2,8 @@ package objectVerifier.verificationRules;
 
 import com.google.common.collect.Lists;
 import objectVerifier.FieldsToCheck;
-import objectVerifier.applicationRules.ListApplicationRule;
+import objectVerifier.ObjectVerifier;
 import objectVerifier.applicationRules.MapApplicationRule;
-import objectVerifier.utilities.RulesHelper;
 import org.testng.Assert;
 
 import java.util.*;
@@ -16,8 +15,6 @@ public class MapExactMatchRule extends VerificationRule {
 	}
 
 	public void verifyObject(Object actualObject, Object expectedObject, FieldsToCheck fieldsToCheck, List<VerificationRule> verificationRules, String errorMessage) {
-		setChildVerificationRules(RulesHelper.setRulesToDefaultValuesIfNotSet(verificationRules));
-
 		Map<?, ?> actual = new HashMap<>();
 		actual.putAll((Map)actualObject);
 
@@ -35,11 +32,7 @@ public class MapExactMatchRule extends VerificationRule {
 			Object actualMapObject = actual.get(key);
 			Object expectedMapObject = expected.get(key);
 
-			for (VerificationRule childVerificationRule : childVerificationRules) {
-				childVerificationRule.verify(actualMapObject, expectedMapObject, fieldsToCheck, verificationRules,
-						String.format("%s%sActual map items don't match for key %s.",
-								errorMessage, System.lineSeparator(), key.toString()));
-			}
+			ObjectVerifier.verifyObject(actualMapObject, expectedMapObject, fieldsToCheck, verificationRules, errorMessage);
 		}
 	}
 }

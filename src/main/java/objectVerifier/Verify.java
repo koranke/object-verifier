@@ -1,7 +1,6 @@
 package objectVerifier;
 
 import com.google.common.collect.Lists;
-import objectVerifier.utilities.ObjectHelper;
 import objectVerifier.verificationRules.VerificationRule;
 import java.util.List;
 
@@ -80,27 +79,12 @@ public class Verify {
 	public void isEqualTo(Object expectedObject) {
 		this.expectedObject = expectedObject;
 
-		boolean isListComparison = (actualObject != null && ObjectHelper.isList(actualObject.getClass()))
-				|| (expectedObject != null && ObjectHelper.isList(expectedObject.getClass()));
-
-		//TODO: we need to add support for maps and sets
-		if (isListComparison) {
-			ObjectVerifier.verifyObject(
-					actualObject,
-					expectedObject,
-					fieldsToCheck,
-					verificationRules,
-					null);
-		} else {
-			ObjectVerifier.verifyDomainObject(
-					actualObject.getClass(),
-					actualObject,
-					expectedObject,
-					fieldsToCheck,
-					verificationRules,
-					null);
-		}
+		ObjectVerifier.verifyObject(
+				actualObject,
+				expectedObject,
+				fieldsToCheck,
+				verificationRules,
+				null);
 	}
-
 
 }

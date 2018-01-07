@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 import supportingClasses.ChildThing;
 import supportingClasses.ParentThing;
 
-public class ObjectVerifierFieldsToCheckTest {
+public class FieldsToCheckTest {
 
 	@Test
 	public void testExcludeField() {
@@ -188,7 +188,8 @@ public class ObjectVerifierFieldsToCheckTest {
 		ParentThing actualThing = ParentThing.getPopulatedParent();
 		ParentThing expectedThing = new ParentThing()
 				.setAge(40)
-				.setFirstName("Joe");
+				.setFirstName("Joe")
+				.setLastName("Zinzinni");
 
 		Verify.that(actualThing).usingFields("age", "firstName").isEqualTo(expectedThing);
 	}
