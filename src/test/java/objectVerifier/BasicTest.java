@@ -1,8 +1,11 @@
 package objectVerifier;
 
+import objectVerifier.verificationRules.ListUnsortedRule;
 import org.testng.annotations.Test;
 import supportingClasses.ChildThing;
 import supportingClasses.ParentThing;
+import java.util.Collections;
+import java.util.List;
 
 public class BasicTest {
 
@@ -64,6 +67,17 @@ public class BasicTest {
 		ParentThing expectedThing = new ParentThing().setFirstName("Jack");
 
 		Verify.that(actualThing).usingFields("fistNam").isEqualTo(expectedThing);
+	}
+
+	@Test
+	public void testRuleOnly() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = ParentThing.getPopulatedParent();
+		List<String> words = expectedThing.getFavoriteWords();
+		Collections.shuffle(words);
+		expectedThing.setFavoriteWords(words);
+
+		Verify.that(actualThing).usingRule(new ListUnsortedRule()).isEqualTo(expectedThing);
 	}
 
 }

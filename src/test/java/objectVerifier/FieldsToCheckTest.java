@@ -62,10 +62,29 @@ public class FieldsToCheckTest {
 	@Test
 	public void testIncludeField() {
 		ParentThing actualThing = ParentThing.getPopulatedParent();
-		ParentThing expectedThing = new ParentThing().setAge(40);
+		ParentThing expectedThing = ParentThing.getPopulatedParent();
+		actualThing.setAge(20);
+		actualThing.setFirstName("GG");
+		expectedThing.setAge(20);
+		expectedThing.setFirstName("JJ");
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
+				.includeField("age");
+
+		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);
+	}
+
+	@Test
+	public void testIncludeFieldWithoutClass() {
+		ParentThing actualThing = ParentThing.getPopulatedParent();
+		ParentThing expectedThing = ParentThing.getPopulatedParent();
+		actualThing.setAge(20);
+		actualThing.setFirstName("GG");
+		expectedThing.setAge(20);
+		expectedThing.setFirstName("JJ");
+
+		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.includeField("age");
 
 		Verify.that(actualThing).usingFields(fieldsToCheck).isEqualTo(expectedThing);

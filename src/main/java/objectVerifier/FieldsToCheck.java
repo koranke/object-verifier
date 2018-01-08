@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class FieldsToCheck {
 	private Map<Class, ObjectFields> fieldsToCheck = new HashMap<>();
-	private Class<?> currentKey;
+	private Class<?> currentKey = Object.class;
 
 	public FieldsToCheck withKey(Class<?> cls) {
 		currentKey = cls;

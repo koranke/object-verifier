@@ -10,6 +10,12 @@ service call returns a JSON document that is deserialized into a Java object.  Y
 to verify the content of the deserialized object by populating another instance of the object with expected
 results and then using the Verify.that() method.
 
+Normally, a test might include a series of assertions for each member of an object.  For example, the object
+under test includes 10 different members.  In this case, a test would need to include 10 different assertions.
+When using this framework, the test only needs to make one assertion.  Of course, it still needs to specify each of the
+10 expected result values by assigning them to a companion "expected result" object.
+  
+
 ## Usage
 While you can use the ObjectVerifier directly, it's preferable to use the 
 custom Verify.that() method.
@@ -22,10 +28,10 @@ Verify.that(actualTrack).isEqualTo(expectedTrack);
 
 
 There are two supporting classes that are needed for more complex object comparisons: FieldsToCheck
-and VerificationRule.  Basically, FieldsToCheck lets you control which fields to check
+and VerificationRule.  FieldsToCheck lets you control which fields to check
 in an object and VerificationRule lets you control how to compare two objects.  If you do not
-specify a FieldsToCheck object, all fields will be checked.  If you do not specify VerificationRule, 
-all fields will be checked for exact matches and, in the case of collections, exact order.
+specify a FieldsToCheck object, all fields will be checked.  If you do not specify any VerificationRules, 
+all fields will be checked for exact matches.
 
 One other configuration element is the @Transient annotation.  If you are working with a class that 
 includes additional methods besides the standard getters and setters, and any of those additional 
@@ -34,19 +40,16 @@ in comparisons.
 
 ## Use Cases:
 
-### Simple object, Verify all
-The object under test contains a number of native data type members.  It also contains a list of String.
-All fields need to be tested.  The list of String needs to match exactly, including order.  Since all fields
-need to be checked and the default verification rules are what are needed, there is no need to specify
-fields to check or verification rules.
+### Verify all
+If all object members need to be checked and the default verification rules are what are needed, 
+there is no need to specify fields to check or verification rules.
 
 ```java
 Verify.that(actualTrack).isEqualTo(expectedTrack)
 ```
 
-### Simple object, verify only two fields
-The object under test contains a number of native data type members.
-It also contains a list of String. Only two fields need to be tested.
+### Verify only two fields
+If only two members of an object need to be tested, the fields to check must be specified.
 
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
@@ -57,9 +60,8 @@ FieldsToCheck fieldsToCheck = new FieldsToCheck()
 Verify.that(actualTrack).usingFields(fieldsToCheck).isEqualTo(expectedTrack)
 ```
 
-### Simple object, verify all fields except for one
-The object under test contains a number of native data type members.
-It also contains a list of String.  All fields except one need to be tested.
+### Verify all fields except for one
+If all fields except one need to be tested, specify the field to exclude.
 
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck().
@@ -69,25 +71,18 @@ FieldsToCheck fieldsToCheck = new FieldsToCheck().
 Verify.that(actualTrack).usingFields(fieldsToCheck).isEqualTo(expectedTrack)
 ```
 
-### Simple object, do not check for exact order when comparing collections
-The objecct under test contains a number of native data type members.
-It also contains a list of String.  All fields except one need to be tested.  The order of the list of strings is not important.
+### Do not check for exact order when comparing fields that are collections
+If the object under test includes one or more members that are collections,
+ and if the order of those collections is not important, use the ListUnsortedRule.
 
 ```java
-FieldsToCheck fieldsToCheck = new FieldsToCheck()
-				.withKey(Track.class)
-				.excludeField("trackId");
-
-Verify.that(actualTrack)
-		.usingFields(fieldsToCheck)
-		.usingRule(new ListUnsortedRule())
-		.isEqualTo(expectedTrack);
+Verify.that(actualTrack).usingRule(new ListUnsortedRule()).isEqualTo(expectedTrack);
 ```
 
-### Simple object, consider dates as equal if they are within 5 minutes of each other
-The object under test contains a date member.
-For the purpose of the test, if the actual date is withing 5 minutes of the expected
-date, the test should pass.
+### Consider dates as equal if they are within 5 minutes of each other
+If the object under test includes a date value, it's unlikely that the actual time
+and the expected time will precisely match.  If that is the case, using the DateTimeInRange rule.
+In the below example, ff the actual date is withing 5 minutes of the expected date, the test will pass.
 
 ```java
 Verify.that(actualTrack)
@@ -95,20 +90,16 @@ Verify.that(actualTrack)
 		.isEqualTo(expectedTrack);
 ```
 
-### Simple object, check all fields but don't check for exact order when comparing one collection
-The object under test contains a number of native data type members.
-It also contains two lists of String.  All fields need to be tested.  
-The order of the list of strings is not important for one list but is important for
-the other list.
+### Check all fields but don't check for exact order when comparing one collection
+Verification rules can be global, in which case they apply to all fields
+for all objects, or they can be field specific.  In the below example, we want to check all
+fields but at the same time need to specify a field-specific verification rule for one field.
+The method checkAllFieldsForCurrentKey forces all fields to be checked, not only the field 
+specified by "includeField()".
 
-Explanation:  Verification rules can be global, in which case they apply to all fields
-for all objects, or they can be field specific.  In the below example, the
-FieldsToCheck method checkAllFieldsForCurrentKey is needed as we want to check all
-fields but at the same time need to specify a field level verification rule for one field.
-Without the final call to checkAllFieldsForCurrentKey, only the field "listOfStringUnsorted"
-would be checked.
-
-Also note that the verification rule is attached to the field, so default matching applies to all other fields.
+Since the verification rule is attached to the field, default matching applies to all other fields.
+If the object under test had another member that was also a list, that member would not be verified
+with the unsorted rule.
 
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
@@ -121,22 +112,18 @@ Verify.that(actualTrack)
 		.isEqualTo(expectedTrack);
 ```
 
-### Complex object, check all fields and use default validation for all
-The object under test contains some native data type
-members and also contains members that are themselves domain objects, which in turn
-may also have members that are domain objects.  In this case, all fields for the
-domain object and all its child domain objects need to be tested.
+### Child objects: Checking all fields and using default validation for all
+If the object under test has a member that itself is a custom object, the child object
+will also be verified.  For example, if the Track object includes a list of related Track objects,
+the following call will verify both the parent Track object and the child track objects.
 
 ```java
 Verify.that(actualTrack).isEqualTo(expectedTrack);
 ```
 
-### Complex object, check all fields for the main domain except one.  Only check one field for a child domain object
-The object under test contains some native data type
-members and also contains members that are themselves domain objects, which in turn
-may also have members that are domain objects.  In this case, all fields for the
-parent domain object need to be checked, but only one field for one of its child domain 
-objects need to be tested.
+### Child objects: check all fields for the parent except one.  Only check one field for a child object
+In this case, for the parent object, all members except one need to be checked.
+For the child object, only one field needs to be checked. 
 
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
@@ -158,25 +145,22 @@ Verify.that() can test the following.
 * Two lists of domain objects
 * Two arrays of domain objects
 
-Within a domain object, the following can be tested:
-* Native data types: boolean, byte, short, int, long, char
+Within a custom object, the following can be tested:
+* Native data types: boolean, byte, short, int, long, double, float, char
 * Simple data types: String, Boolean, Byte, Short, Integer, Long, Double, Float, Char
 * Dates/Time: Calendar, Date, Timestamp, LocalDate, LocalDateTime
-* Other domain ojbects
+* Other custom objects
 * Lists of any data type
 * Arrays of any data type
 * Sets of any data type
 * Maps of any data type
+* Any object that implements the equals method
 
-### Unsupported data types
-Support for the following has not been added yet.
-* float
-* double
 
 ### FieldsToCheck
 FieldsToCheck allows you to specify which fields to check and it also allows you to associate verification rules at the
-field level.  FieldsToCheck allows you to configure fields for both the main domain object and any domain objects that are child objects of the current
-object under test.  This is done by setting the current key to the desired domain object and then adding or excluding fields as needed.
+field level.  FieldsToCheck allows you to configure fields for both a parent object and any child objects.
+ This is done by setting the current key to the desired custom object and then adding or excluding fields as needed.
 
 For example:
 
@@ -207,8 +191,21 @@ FieldsToCheck fieldsToCheck = new FieldsToCheck()
 
 In the above example, all fields for Album will be checked, but only the "id" field will be checked for Track objects.
 
+You do not have to specify a key.  Omitting the "key" statement will result in all fields matching the specified name
+to be included or excluded.  For example, the object under test has a member named "id".  It also has a child
+object and that object also has a member named "id".  The following code would result in the "id" field for both
+the parent and child getting checked.  If the object under test has no child objects or if the member names that
+need to be checked are unique across both parent and child objects, you can simplify the statement by omitting
+the key specifiers.
+
+```java
+FieldsToCheck fieldsToCheck = new FieldsToCheck()
+				.includeField("id");
+```
+
+
 Finally, there is a shortcut for adding fields.  If you don't need to specify the class key for the field, you
-can simply pass in the field names as string values in the Verify.that() method.  In this case, verification
+can simply pass in the field names as string values.  In this case, verification
 will run on any field that matches the name, regardless of the class that the field name is associated with.
 
 For example:
@@ -216,6 +213,15 @@ For example:
 ```java
 Verify.that(actualTrack).usingFields("id", "releaseDate").isEqualTo(expectedTrack);
 ```
+
+Verification will fail if you misspell an object member name.  For example, if the object under test
+includes a member named "title" but we try to verify a field named "tittle", verification would fail
+with a message that the field "tittle" could not be found.
+
+```java
+Verify.that(actualTrack).usingFields("tittle").isEqualTo(expectedTrack);
+```
+
 
 
 #### @Transient Annotation
@@ -248,6 +254,9 @@ List<VerificationRule> rules = Lists.newArrayList(
 
 ```
 
+### Notes
+* If both an actual and expected item are null, the comparison will pass.
+* If only one of the compared items is null, the comparison will fail.
 
 
 ### Limitations
