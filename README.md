@@ -1,8 +1,9 @@
 # ObjectVerifier
 
 ## Purpose:
-To assert that an expected custom object and an actual custom object are equal or pass other comparison criteria.  
-No special supporting code in the custom class is needed.  There is no need to implement an equals method.
+QA test framework for assertions.  To assert that an expected custom object and an actual 
+custom object are equal or pass other comparison criteria.  No special supporting code in 
+the custom class is needed.  There is no need to implement an equals method.
 
 This framework's primary purpose is to make it easy to verify complex objects.  Expected results must be
 constructed using an instance of the same class that is used to hold actual results.  For example, a web
