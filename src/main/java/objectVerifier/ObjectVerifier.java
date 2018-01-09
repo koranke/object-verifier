@@ -25,6 +25,8 @@ public class ObjectVerifier {
 		checkIfEitherObjectIsNull(actualObject, expectedObject, errorMessage);
 		checkThatClassesMatch(actualObject, expectedObject, errorMessage);
 
+		verificationRules = RulesHelper.setRulesToDefaultValuesIfNotSet(verificationRules);
+
 		if (RulesHelper.verificationRuleExistsForObjectDataType(actualObject, expectedObject, verificationRules)) {
 			for (VerificationRule verificationRule : verificationRules) {
 				verificationRule.verify(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);

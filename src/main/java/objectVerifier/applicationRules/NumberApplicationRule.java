@@ -14,8 +14,9 @@ public class NumberApplicationRule implements IApplicationRule {
 
 	private boolean isNumber(Object object) {
 		Class cls = object.getClass();
-		return cls == int.class || cls == long.class
-				|| cls == short.class || cls == Integer.class
+		return cls == byte.class || cls == int.class
+				|| cls == long.class || cls == short.class
+				|| cls == Byte.class || cls == Integer.class
 				|| cls == Long.class || cls == Short.class;
 	}
 }

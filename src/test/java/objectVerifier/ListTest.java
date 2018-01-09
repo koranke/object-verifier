@@ -10,6 +10,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ListTest {
@@ -219,5 +221,57 @@ public class ListTest {
 		expectedThing.getAliases().add("The Dude");
 
 		Verify.that(actualThing).usingFields("aliases").isEqualTo(expectedThing);
+	}
+
+	@Test
+	public void testListOfObjects() {
+		List<ParentThing> actualParentThings = new ArrayList<>();
+		actualParentThings.add(ParentThing.getPopulatedParent().setFirstName("Jill"));
+		actualParentThings.add(ParentThing.getPopulatedParent().setFirstName("John"));
+
+		List<ParentThing> expectedParentThings = new ArrayList<>();
+		expectedParentThings.add(ParentThing.getPopulatedParent().setFirstName("Jill"));
+		expectedParentThings.add(ParentThing.getPopulatedParent().setFirstName("John"));
+
+		Verify.that(actualParentThings).isEqualTo(expectedParentThings);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testListOfObjectsFail() {
+		List<ParentThing> actualParentThings = new ArrayList<>();
+		actualParentThings.add(ParentThing.getPopulatedParent().setFirstName("Jill"));
+		actualParentThings.add(ParentThing.getPopulatedParent().setFirstName("John"));
+
+		List<ParentThing> expectedParentThings = new ArrayList<>();
+		expectedParentThings.add(ParentThing.getPopulatedParent().setFirstName("Jill"));
+		expectedParentThings.add(ParentThing.getPopulatedParent().setFirstName("Jackson"));
+
+		Verify.that(actualParentThings).isEqualTo(expectedParentThings);
+	}
+
+	@Test
+	public void testArrayOfObjects() {
+		ParentThing[] actualParentThings = new ParentThing[2];
+		actualParentThings[0] = ParentThing.getPopulatedParent().setFirstName("Jill");
+		actualParentThings[1] = ParentThing.getPopulatedParent().setFirstName("John");
+
+		ParentThing[] expectedParentThings = new ParentThing[2];
+		expectedParentThings[0] = ParentThing.getPopulatedParent().setFirstName("Jill");
+		expectedParentThings[1] = ParentThing.getPopulatedParent().setFirstName("John");
+
+		Verify.that(actualParentThings).isEqualTo(expectedParentThings);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testArrayOfObjectsFail() {
+		ParentThing[] actualParentThings = new ParentThing[2];
+		actualParentThings[0] = ParentThing.getPopulatedParent().setFirstName("Jill");
+		actualParentThings[1] = ParentThing.getPopulatedParent().setFirstName("John");
+
+		ParentThing[] expectedParentThings = new ParentThing[2];
+		expectedParentThings[0] = ParentThing.getPopulatedParent().setFirstName("Jill");
+		expectedParentThings[1] = ParentThing.getPopulatedParent().setFirstName("John").setAge(100);
+
+		Verify.that(actualParentThings).isEqualTo(expectedParentThings);
 	}
 }

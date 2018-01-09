@@ -80,4 +80,30 @@ public class BasicTest {
 		Verify.that(actualThing).usingRule(new ListUnsortedRule()).isEqualTo(expectedThing);
 	}
 
+	@Test
+	public void testBoolean() {
+		ParentThing actualThing = new ParentThing()
+				.setFirstName("Joe")
+				.setActive(true);
+
+		ParentThing expectedThing = new ParentThing()
+				.setFirstName("Joe")
+				.setActive(true);
+
+		Verify.that(actualThing).isEqualTo(expectedThing);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testBooleanFail() {
+		ParentThing actualThing = new ParentThing()
+				.setFirstName("Joe")
+				.setActive(false);
+
+		ParentThing expectedThing = new ParentThing()
+				.setFirstName("Joe")
+				.setActive(true);
+
+		Verify.that(actualThing).isEqualTo(expectedThing);
+	}
+
 }

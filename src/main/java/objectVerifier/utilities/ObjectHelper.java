@@ -1,9 +1,6 @@
 package objectVerifier.utilities;
 
 import java.lang.reflect.Method;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ObjectHelper {
 
@@ -18,6 +15,10 @@ public class ObjectHelper {
 			}
 		}
 		return false;
+	}
+
+	public static boolean isCollection(Class<?> cls) {
+		return isList(cls) || isArray(cls) || isSet(cls);
 	}
 
 	public static boolean isArray(Class<?> cls) {
@@ -61,57 +62,6 @@ public class ObjectHelper {
 				cls == java.util.Calendar.class ||
 				cls == java.time.LocalDateTime.class ||
 				cls == java.time.LocalDate.class;
-	}
-
-	public static Class<?> getClassForMap(Object object) {
-		if (object == null) {
-			return null;
-		}
-		Map<?, ?> mapOfObjects = (Map<?, ?>) object;
-		if (mapOfObjects == null) return null;
-		if (mapOfObjects.size() > 0) {
-			return mapOfObjects.values().iterator().next().getClass();
-		} else {
-			return null;
-		}
-	}
-
-	//TODO: this will fail if the object is an array of native data type.  need to fix to handle that situation.
-	public static Class<?> getClassForArray(Object object) {
-		if (object == null) {
-			return null;
-		}
-		Object[] arrayOfObjects = (Object[]) object;
-		if (arrayOfObjects == null) return null;
-		if (arrayOfObjects.length > 0) {
-			return arrayOfObjects[0].getClass();
-		} else {
-			return null;
-		}
-	}
-
-	public static Class<?> getClassForSet(Object object) {
-		if (object == null) {
-			return null;
-		}
-		Set<?> listOfObjects = (Set<?>) object;
-		if (listOfObjects != null && listOfObjects.size() > 0) {
-			return listOfObjects.iterator().next().getClass();
-		} else {
-			return null;
-		}
-	}
-
-	public static Class<?> getClassForList(Object object) {
-		if (object == null) {
-			return null;
-		}
-		List<?> listOfObjects = (List<?>) object;
-		if (listOfObjects != null && listOfObjects.size() > 0) {
-			return listOfObjects.get(0).getClass();
-		} else {
-			return null;
-		}
 	}
 
 }
