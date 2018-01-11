@@ -1,12 +1,10 @@
 package objectVerifier;
 
 import com.google.common.collect.Lists;
-import objectVerifier.FieldsToCheck;
-import objectVerifier.Verify;
+import objectVerifier.enums.CaseComparison;
 import objectVerifier.verificationRules.ListContainsRule;
 import objectVerifier.verificationRules.ListDoesNotContainsRule;
 import objectVerifier.verificationRules.StringExactMatchRule;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
@@ -165,7 +163,7 @@ public class ListTest {
 
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
-				.includeField("favoriteWords", new StringExactMatchRule(true));
+				.includeField("favoriteWords", new StringExactMatchRule(CaseComparison.caseInsensitive));
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)
@@ -182,7 +180,7 @@ public class ListTest {
 		FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(ParentThing.class)
 				.includeField("firstName")
-				.includeField("favoriteWords", new StringExactMatchRule(true));
+				.includeField("favoriteWords", new StringExactMatchRule(CaseComparison.caseInsensitive));
 
 		Verify.that(actualThing)
 				.usingFields(fieldsToCheck)

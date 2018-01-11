@@ -3,27 +3,28 @@ package objectVerifier.verificationRules;
 import com.google.common.collect.Lists;
 import objectVerifier.FieldsToCheck;
 import objectVerifier.applicationRules.StringApplicationRule;
+import objectVerifier.enums.CaseComparison;
 import org.testng.Assert;
 
 import java.util.List;
 
 public class StringContainsRule extends VerificationRule {
-	private boolean ignoreCase = false;
+	private CaseComparison caseComparison = CaseComparison.caseSensitive;
 
 	public StringContainsRule() {
 		super(Lists.newArrayList(new StringApplicationRule()));
 	}
 
-	public StringContainsRule(boolean ignoreCase) {
+	public StringContainsRule(CaseComparison caseComparison) {
 		super(Lists.newArrayList(new StringApplicationRule()));
-		this.ignoreCase = ignoreCase;
+		this.caseComparison = caseComparison;
 	}
 
 	public void verifyObject(Object actualObject, Object expectedObject,
 							 FieldsToCheck fieldsToCheck, List<VerificationRule> verificationRules, String errorMessage) {
 		String actual = (String) actualObject;
 		String expected = (String) expectedObject;
-		if (ignoreCase) {
+		if (caseComparison == CaseComparison.caseInsensitive) {
 			actual = actual.toLowerCase();
 			expected = expected.toLowerCase();
 		}

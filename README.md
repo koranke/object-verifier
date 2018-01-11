@@ -1,7 +1,7 @@
 # ObjectVerifier
 
 ## Purpose:
-QA test framework for assertions.  To assert that an expected custom object and an actual 
+QA test framework for assertions in Java.  To assert that an expected custom object and an actual 
 custom object are equal or pass other comparison criteria.  No special supporting code in 
 the custom class is needed.  There is no need to implement an equals method.
 
@@ -15,18 +15,68 @@ Normally, a test might include a series of assertions for each member of an obje
 under test includes 10 different members.  In this case, a test would need to include 10 different assertions.
 When using this framework, the test only needs to make one assertion.  Of course, it still needs to specify each of the
 10 expected result values by assigning them to a companion "expected result" object.
-  
+
+For example, an API under test is for a UserService that returns details on a User.  A test makes a call to
+the service and verifies that the return data is correct.  Typically, this would look as follows.
+
+```java
+@Test
+public void testCanGetUserDetails() {
+	...
+	User user = UserServiceClient.getUser(userId);
+	Assert.assertEquals(user.getId(), userId, "Invalid user Id.");
+	Assert.assertEquals(user.getFirstName(), "John", "Invalid first name.");
+	Assert.assertEquals(user.getLastName(), "Doe", "Invalid last name.");
+	Assert.assertEquals(user.getAge(), 20, "Invalid age.");
+	Assert.assertEquals(user.getGender(), "m", "Invalid gender.");
+	Assert.assertEquals(user.getIsMarried(), false, "Invalid marriage status.");
+	Assert.assertEquals(user.getDateAccountCreated(), LocalDate.now.toString() , "Invalid account creation date.");
+	Assert.assertEquals(user.getAddress().getStreet(), "123 Main St", "Invalid address street.");
+	Assert.assertEquals(user.getAddress().getCity(), "Billton", "Invalid city.");
+}
+```
+
+Using the framework, if expected results were manually specified, it would look something like this.
+
+```java
+@Test
+public void testCanGetUserDetails() {
+	...
+	User user = UserServiceClient.getUser(userId);
+	User expectedUser = new User().setId(userId)
+		.setFirstName("John")
+		.setLastName("Doe")
+		.setAge(20)
+		.setGender("m")
+		.setIsMarried(false)
+		.setDateAccountCreated(LocalDate.now.toString());
+	expectedUser.getAddress().setStreet("123 Main St").setCity("Billton");
+	
+	Verify.that(user).isEqualTo(expectedUser);
+}
+```
+
+Alternatively, if the expected results can be determined from an alternative source of truth (for example,
+a database or other business logic), then a custom method can be created to populate expected results.
+rather than manually populating expected values.
+
+```java
+@Test
+public void testCanGetUserDetails() {
+	...
+	User user = UserServiceClient.getUser(userId);
+	User expectedUser = getExpectedUser(userId);
+	Verify.that(user).isEqualTo(expectedUser);
+}
+```
+
 
 ## Usage
-While you can use the ObjectVerifier directly, it's preferable to use the 
-custom Verify.that() method.
-
-Example call: 
+Basic assertion: 
 
 ```java
 Verify.that(actualTrack).isEqualTo(expectedTrack);
 ```
-
 
 There are two supporting classes that are needed for more complex object comparisons: FieldsToCheck
 and VerificationRule.  FieldsToCheck lets you control which fields to check
@@ -34,10 +84,6 @@ in an object and VerificationRule lets you control how to compare two objects.  
 specify a FieldsToCheck object, all fields will be checked.  If you do not specify any VerificationRules, 
 all fields will be checked for exact matches.
 
-One other configuration element is the @Transient annotation.  If you are working with a class that 
-includes additional methods besides the standard getters and setters, and any of those additional 
-methods start with "get", the method must be annotated with @Transient to prevent it from being included 
-in comparisons.
 
 ## Use Cases:
 
@@ -224,7 +270,6 @@ Verify.that(actualTrack).usingFields("tittle").isEqualTo(expectedTrack);
 ```
 
 
-
 #### @Transient Annotation
 If you are working with a domain class that includes additional methods besides the
 standard getters and setters, and if any of those additional methods start with "get", the method must be
@@ -244,16 +289,105 @@ case where a field-level rule uses the same application rule.  For example, if t
 for StringExactMatchRule and a field-level rule for StringContainsRule, since both use the same 
 StringApplicationRule, only the field-level rule will be used (for that particular field).
 
-Example collection of rules:
+For simple equality assertions, there is no need to specify verification rules.  However, for things like
+case-insensitive string comparisons, in-range comparisons, etc, verification rules are needed.  Some verification
+rules can take one or more parameters (DateTimeInRangeRule, StringExactMatchRule) whereas others do not
+take parameters (ListUnsortedRule, MapContainsRule).
 
+
+### List of Verification Rules With Examples
+* DateTimeInRangeRule(long range, TemporalUnit timeUnit)
+
+In this example, if expected time is 4:30, then assertion will pass if the actual time is between 3:30 and 5:30.
 ```java
-List<VerificationRule> rules = Lists.newArrayList(
-	new NumberInRangeRule(5),
-	new ListUnsortedRule()
-	new StringContainsRule()		
-);
+new DateTimeInRangeRule(1, ChronoUnit.HOURS)
+````
 
-```
+* ListContainsRule()
+
+In this example, if expected list is 1, 2, 3, then assertion will pass if the actual list contains all 
+of the items in the expected list, regardless of any extra items in the actual list that are
+not contained in the expected list.
+```java
+new ListContainsRule()
+````
+
+* ListDoesNotContainsRule()
+
+In this example, if expected list is 1, 2, 3, then assertion will pass if the actual list does not contain 
+any of the items in the expected list.
+```java
+new ListDoesNotContainsRule()
+````
+
+* ListExactMatchRule()
+
+In this example, if expected list is 1, 2, 3, then assertion will pass only if the actual list contains 
+the exact same items in the exact same order.
+```java
+new ListExactMatchRule()
+````
+
+* ListUnsortedRule()
+
+In this example, if expected list is 1, 2, 3, then assertion will pass if the actual list contains 
+the exact same items, regardless of the order.
+```java
+new ListUnsortedRule()
+````
+
+* MapContainsRule()
+
+In this example, if expected map contains the keys 1 and 2 with values "one" and "two", 
+then assertion will pass if the actual map contains all 
+of the keys in the expected map, regardless of any extra items in the actual list that are
+not contained in the expected list, and that the values of those keys also match.
+```java
+new MapContainsRule()
+````
+
+* MapExactMatchRule()
+
+In this example, if expected map contains the keys 1 and 2 with values "one" and "two", 
+then assertion will pass only if the actual map contains the exact same keys in the expected map
+ and that the values of those keys also match.
+```java
+new MapExactMatchRule()
+````
+
+* NumberInRangeRule(long range)
+
+In this example, if expected number is 465, 
+then assertion will pass if the actual number is between 455 and 475.
+```java
+new NumberInRangeRule(10)
+````
+
+* NumberMatchRule(NumericComparison numericComparison)
+
+In this example, if expected number is 8, 
+then assertion will pass if the actual number is less than or equal to 8.
+```java
+new NumberMatchRule(NumericComparison.lessThanOrEqualTo)
+````
+
+* StringContainsRule(CaseComparison caseComparison)
+
+In this example, if expected string is "cat", 
+then assertion will pass if the actual string contains "cat", regardless of case.  
+For example, "CATALOG" or "Calcat".
+```java
+new StringContainsRule(CaseComparison.caseInsensitive)
+````
+
+* StringExactMatchRule(CaseComparison caseComparison)
+
+In this example, if expected string is "Cat", 
+then assertion will pass only if the actual string is also "Cat".
+```java
+new StringExactMatchRule(CaseComparison.caseSensitive)
+````
+
 
 ### Notes
 * If both an actual and expected item are null, the comparison will pass.
