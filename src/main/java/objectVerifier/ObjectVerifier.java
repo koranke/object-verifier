@@ -158,7 +158,7 @@ public class ObjectVerifier {
 	private static void checkThatClassesMatch(Object actualObject, Object expectedObject, String errorMessage) {
 		Assert.assertEquals(actualObject.getClass(), expectedObject.getClass(),
 				String.format("%s\nUnable to compare objects as they are different classes.  Actual object is of type %s." +
-						" Expected object is of type %s.\n", errorMessage, actualObject.getClass().getSimpleName(),
+								" Expected object is of type %s.\n", errorMessage, actualObject.getClass().getSimpleName(),
 						expectedObject.getClass().getSimpleName()));
 	}
 }

@@ -57,7 +57,7 @@ public void testCanGetUserDetails() {
 ```
 
 Alternatively, if the expected results can be determined from an alternative source of truth (for example,
-a database or other business logic), then a custom method can be created to populate expected results.
+a database or other business logic), then a custom method can be created to populate expected results
 rather than manually populating expected values.
 
 ```java
@@ -128,8 +128,8 @@ Verify.that(actualTrack).usingRule(new ListUnsortedRule()).isEqualTo(expectedTra
 
 ### Consider dates as equal if they are within 5 minutes of each other
 If the object under test includes a date value, it's unlikely that the actual time
-and the expected time will precisely match.  If that is the case, using the DateTimeInRange rule.
-In the below example, ff the actual date is withing 5 minutes of the expected date, the test will pass.
+and the expected time will precisely match.  If that is the case, use the DateTimeInRange rule.
+In the below example, if the actual date is withing 5 minutes (5 more or 5 less) of the expected date, the test will pass.
 
 ```java
 Verify.that(actualTrack)
@@ -137,21 +137,34 @@ Verify.that(actualTrack)
 		.isEqualTo(expectedTrack);
 ```
 
-### Check all fields but don't check for exact order when comparing one collection
+### Use a comparison rule for a specific field
 Verification rules can be global, in which case they apply to all fields
-for all objects, or they can be field specific.  In the below example, we want to check all
-fields but at the same time need to specify a field-specific verification rule for one field.
-The method checkAllFieldsForCurrentKey forces all fields to be checked, not only the field 
-specified by "includeField()".
-
-Since the verification rule is attached to the field, default matching applies to all other fields.
-If the object under test had another member that was also a list, that member would not be verified
-with the unsorted rule.
+for all objects, or they can be field specific.  Rules specified with "usingRule" are global.
+To apply a rule to a field, pass the rule in as a parameter for "includeField".  In the below
+example, "artistNames" and "keyWords" are lists.  "artistNames" will be verified using the default
+rule for exact match, but "keyWords" will be verified using the ListUnsortedRule.
 
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Track.class)
-				.includeField("listOfStringUnsorted", new ListUnsortedRule())
+				.includeField("trackName")
+				.includeField("artistNames")
+				.includeField("keyWords", new ListUnsortedRule());
+
+Verify.that(actualTrack)
+		.usingFields(fieldsToCheck)
+		.isEqualTo(expectedTrack);
+```
+
+### Check all fields but don't check for exact order when comparing one collection
+If you need to specify a field-specific rule but also need to verify all fields,
+ use the method checkAllFieldsForCurrentKey to force all fields to be checked.  Without this method, 
+ only the fields specified by "includeField()" will be checked.
+
+```java
+FieldsToCheck fieldsToCheck = new FieldsToCheck()
+				.withKey(Track.class)
+				.includeField("keyWords", new ListUnsortedRule())
 				.checkAllFieldsForCurrentKey();
 
 Verify.that(actualTrack)
@@ -183,6 +196,32 @@ Verify.that(actualTrack)
 		.usingFields(fieldsToCheck)
 		.isEqualTo(expectedTrack);
 ```
+
+
+### Compare multiple pairs of objects and provide a context message in case a comparison fails
+When looping through more than one pair of objects for comparison, if there is a failure, 
+there needs to be a context message to help understand at which point the failure occurred.  
+For example, there is a list of 50 users ids that need to be tested.
+The test will call the service under test to get the user details and will also populate a companion
+"expected" user based on values stored in a database.  
+With no context message the test could fail with something like "User.Age equality assertion
+failed.  Actual Age: 12   Expected Age: 14".  Of course, you'd have no idea which user out of the 50 had this
+problem.  To avoid this issue, specify a context message.
+
+```java
+...
+for (Long testId : testIds) {
+	User actualUser = UserServiceClient.getUser(testId);
+	User expectedUser = UserDataStore.getExpectedUser(testId);
+	Verify.that(actualUser)
+		.withContextMessage(String.format("Checking actual user %d.", testId))
+		.isEqualTo(expectedUser);
+}
+...
+```
+
+Now if there is a failure, the context message will report on exactly which user the failure occurred.
+
 
 ## Details:
 
@@ -261,8 +300,8 @@ For example:
 Verify.that(actualTrack).usingFields("id", "releaseDate").isEqualTo(expectedTrack);
 ```
 
-Verification will fail if you misspell an object member name.  For example, if the object under test
-includes a member named "title" but we try to verify a field named "tittle", verification would fail
+Verification will fail if you misspell an object field name.  For example, if the object under test
+included a field named "title" but we tried to verify a field named "tittle", verification would fail
 with a message that the field "tittle" could not be found.
 
 ```java
