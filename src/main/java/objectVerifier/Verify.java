@@ -1,7 +1,7 @@
 package objectVerifier;
 
-import com.google.common.collect.Lists;
 import objectVerifier.verificationRules.VerificationRule;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Verify {
@@ -9,6 +9,7 @@ public class Verify {
 	private Object expectedObject;
 	private FieldsToCheck fieldsToCheck;
 	private List<VerificationRule> verificationRules;
+	private String contextMessage;
 
 	public Object getActualObject() {
 		return actualObject;
@@ -41,11 +42,6 @@ public class Verify {
 		return verificationRules;
 	}
 
-	public Verify setVerificationRules(List<VerificationRule> verificationRules) {
-		this.verificationRules = verificationRules;
-		return this;
-	}
-
 	public static Verify that(Object actualObject) {
 		Verify verify = new Verify();
 		verify.actualObject = actualObject;
@@ -67,12 +63,18 @@ public class Verify {
 	}
 
 	public Verify usingRules(List<VerificationRule> rules) {
-		this.verificationRules = rules;
+		if (verificationRules == null) {
+			verificationRules = new ArrayList<>();
+		}
+		this.verificationRules.addAll(rules);
 		return this;
 	}
 
 	public Verify usingRule(VerificationRule rule) {
-		this.verificationRules = Lists.newArrayList(rule);
+		if (verificationRules == null) {
+			verificationRules = new ArrayList<>();
+		}
+		this.verificationRules.add(rule);
 		return this;
 	}
 
@@ -84,7 +86,11 @@ public class Verify {
 				expectedObject,
 				fieldsToCheck,
 				verificationRules,
-				null);
+				contextMessage);
 	}
 
+	public Verify withContextMessage(String contextMessage) {
+		this.contextMessage = contextMessage;
+		return this;
+	}
 }
