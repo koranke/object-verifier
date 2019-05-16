@@ -1,6 +1,8 @@
 package supportingClasses;
 
 import com.google.common.collect.Lists;
+
+import java.beans.Transient;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -24,6 +26,17 @@ public class ParentThing {
 	private double aNativeDouble;
 	private float aNativeFloat;
 	private char aNativeChar;
+	private String ignoreMe;
+
+	@Transient
+	public String getIgnoreMe() {
+		return ignoreMe;
+	}
+
+	public ParentThing setIgnoreMe(String ignoreMe) {
+		this.ignoreMe = ignoreMe;
+		return this;
+	}
 
 	public String getFirstName() {
 		return firstName;

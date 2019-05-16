@@ -33,7 +33,9 @@ public class ObjectHelper {
 			return false;
 		}
 		return cls == java.util.List.class ||
-				cls == java.util.ArrayList.class;
+				cls == java.util.ArrayList.class ||
+				cls == java.util.LinkedList.class ||
+				cls == java.util.Vector.class;
 	}
 
 	public static boolean isSet(Class<?> cls) {
@@ -41,7 +43,9 @@ public class ObjectHelper {
 			return false;
 		}
 		return cls == java.util.Set.class ||
-				cls == java.util.HashSet.class;
+				cls == java.util.HashSet.class ||
+				cls == java.util.LinkedHashSet.class ||
+				cls == java.util.TreeSet.class;
 	}
 
 	public static boolean isMap(Class<?> cls) {
@@ -49,7 +53,9 @@ public class ObjectHelper {
 			return false;
 		}
 		return cls == java.util.Map.class ||
-				cls == java.util.HashMap.class;
+				cls == java.util.HashMap.class ||
+				cls == java.util.LinkedHashMap.class ||
+				cls == java.util.TreeMap.class;
 	}
 
 	public static boolean isDateType(Class<?> cls) {

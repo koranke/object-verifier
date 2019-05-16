@@ -4,6 +4,10 @@ import objectVerifier.verificationRules.MapContainsRule;
 import org.testng.annotations.Test;
 import supportingClasses.ParentThing;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 public class MapTest {
 
 	/*
@@ -69,4 +73,35 @@ public class MapTest {
 		Verify.that(actualThing).usingFields("codes").usingRule(new MapContainsRule()).isEqualTo(expectedThing);
 	}
 
+	@Test
+	public void testDifferentMapTypes() {
+		ParentThing actualThing = new ParentThing();
+		ParentThing expectedThing = new ParentThing();
+
+		Map<Integer, String> aMap = new HashMap<>();
+		aMap.put(1, "one");
+		actualThing.setCodes(aMap);
+
+		Map<Integer, String> eMap = new LinkedHashMap<>();
+		eMap.put(1, "one");
+		expectedThing.setCodes(eMap);
+
+		Verify.that(actualThing).usingFields("codes").isEqualTo(expectedThing);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testDifferentMapTypesFail() {
+		ParentThing actualThing = new ParentThing();
+		ParentThing expectedThing = new ParentThing();
+
+		Map<Integer, String> aMap = new HashMap<>();
+		aMap.put(1, "one");
+		actualThing.setCodes(aMap);
+
+		Map<Integer, String> eMap = new LinkedHashMap<>();
+		eMap.put(1, "two");
+		expectedThing.setCodes(eMap);
+
+		Verify.that(actualThing).usingFields("codes").isEqualTo(expectedThing);
+	}
 }

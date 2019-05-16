@@ -106,4 +106,17 @@ public class BasicTest {
 		Verify.that(actualThing).isEqualTo(expectedThing);
 	}
 
+	@Test
+	public void testTransient() {
+		ParentThing actualThing = new ParentThing()
+				.setFirstName("Joe")
+				.setIgnoreMe("ZZZZZ");
+
+		ParentThing expectedThing = new ParentThing()
+				.setFirstName("Joe")
+				.setIgnoreMe("xxx");
+
+		Verify.that(actualThing).isEqualTo(expectedThing);
+	}
+
 }

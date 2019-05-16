@@ -10,6 +10,7 @@ import supportingClasses.ParentThing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import java.util.stream.Collectors;
 
 public class ListTest {
@@ -272,4 +273,41 @@ public class ListTest {
 
 		Verify.that(actualParentThings).isEqualTo(expectedParentThings);
 	}
+
+	@Test
+	public void testDifferentListTypes() {
+		ParentThing actualThing = new ParentThing();
+		ParentThing expectedThing = new ParentThing();
+
+		List<Integer> aNumbers = new Vector<>();
+		aNumbers.add(1);
+		aNumbers.add(2);
+		actualThing.setFavoriteNumbers(aNumbers);
+
+		List<Integer> eNumbers = new ArrayList<>();
+		eNumbers.add(1);
+		eNumbers.add(2);
+		expectedThing.setFavoriteNumbers(eNumbers);
+
+		Verify.that(actualThing).isEqualTo(expectedThing);
+	}
+
+	@Test(expectedExceptions = AssertionError.class)
+	public void testDifferentListTypesFail() {
+		ParentThing actualThing = new ParentThing();
+		ParentThing expectedThing = new ParentThing();
+
+		List<Integer> aNumbers = new Vector<>();
+		aNumbers.add(1);
+		aNumbers.add(2);
+		actualThing.setFavoriteNumbers(aNumbers);
+
+		List<Integer> eNumbers = new ArrayList<>();
+		eNumbers.add(1);
+		eNumbers.add(3);
+		expectedThing.setFavoriteNumbers(eNumbers);
+
+		Verify.that(actualThing).isEqualTo(expectedThing);
+	}
+
 }
