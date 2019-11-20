@@ -1,6 +1,7 @@
 package objectVerifier.verificationRules;
 
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
 import objectVerifier.FieldsToCheck;
 import objectVerifier.ObjectVerifier;
 import objectVerifier.applicationRules.ListApplicationRule;
@@ -34,8 +35,10 @@ public class ListContainsRule extends VerificationRule {
 					break;
 				} catch (AssertionError e) {}
 			}
-			Assert.assertTrue(expectedItemFound, String.format("%s%sFailed to find expected item %s in %s.",
-					errorMessage, System.lineSeparator(), expectedItem, actual));
+			String expectedItemToString = new Gson().toJson(expectedItem);
+			String actualToString = new Gson().toJson(actual);
+			Assert.assertTrue(expectedItemFound, String.format("%s%sFailed to find expected item %s\n...in list...\n%s.",
+					errorMessage, System.lineSeparator(), expectedItemToString, actualToString));
 		}
 	}
 }

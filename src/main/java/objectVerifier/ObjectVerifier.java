@@ -91,7 +91,7 @@ public class ObjectVerifier {
 		if (cls == Class.class || currentField.equals("class")) {
 			return false;
 		} else {
-			if (dataItemDescriptor != null) {
+			if (dataItemDescriptor != null && dataItemDescriptor.getReadMethod() != null) {
 				Annotation[] annotations = dataItemDescriptor.getReadMethod().getDeclaredAnnotations();
 				if (annotations != null) {
 					for (Annotation annotation : annotations) {
@@ -164,7 +164,7 @@ public class ObjectVerifier {
 	}
 
 	/*
-	This method needs to be improved around collections.  For example, a domain object could
+	This method has been gutted for now due to a problem with collections.  For example, a domain object could
 	contain a member that is a Map, but the actual type of map between the two instances of the class could be different.
 	One could use a HashMap and one could use a LinkedHashMap.  We don't want comparison to fail in this situation,
 	but the below method will result in a failure.  Need something better than just a name comparison.
@@ -172,7 +172,7 @@ public class ObjectVerifier {
 	private static void checkThatClassesMatch(Object actualObject, Object expectedObject, String errorMessage) {
 		Assert.assertEquals(actualObject.getClass(), expectedObject.getClass(),
 				String.format("%s\nUnable to compare objects as they are different classes.  Actual object is of type %s." +
-						" Expected object is of type %s.\n", errorMessage, actualObject.getClass().getSimpleName(),
+								" Expected object is of type %s.\n", errorMessage, actualObject.getClass().getSimpleName(),
 						expectedObject.getClass().getSimpleName()));
 	}
 }
