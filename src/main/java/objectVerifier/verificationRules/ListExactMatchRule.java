@@ -23,7 +23,7 @@ public class ListExactMatchRule extends VerificationRule {
 		expected.addAll(ListConverter.getAsList(expectedObject));
 
 		Assert.assertEquals(actual.size(), expected.size(),
-				String.format("%s%sActual list size doesn't match expected list size.", errorMessage, System.lineSeparator()));
+				String.format("%s%sActual list size doesn't match expect'd list size.", errorMessage, System.lineSeparator()));
 
 		for (int i = 0; i < actual.size(); i++) {
 			ObjectVerifier.verifyObject(actual.get(i), expected.get(i), fieldsToCheck, verificationRules, errorMessage);

@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.temporal.TemporalUnit;
 
 public class DateTimeHelper {
@@ -77,6 +78,13 @@ public class DateTimeHelper {
 		return isWithinTimeRange(cd, checkRange, timeUnit, rd);
 	}
 
+	public static boolean isWithinTimeRange(java.time.Instant comparatorDate, long checkRange, TemporalUnit timeUnit, java.time.Instant referenceDate) {
+		if (comparatorDate == null || referenceDate == null) return false;
+		LocalDateTime cd = LocalDateTime.ofInstant(comparatorDate, ZoneOffset.UTC);
+		LocalDateTime rd = LocalDateTime.ofInstant(referenceDate, ZoneOffset.UTC);
+		return isWithinTimeRange(cd, checkRange, timeUnit, rd);
+	}
+
 	public static boolean isWithinTimeRange(String className, Object comparatorDate, long checkRange, TemporalUnit timeUnit, Object referenceDate) {
 		switch (className) {
 			case "java.time.LocalDateTime":
@@ -91,10 +99,35 @@ public class DateTimeHelper {
 				return isWithinTimeRange((java.util.Date) comparatorDate, checkRange, timeUnit, (java.util.Date)referenceDate);
 			case "java.util.Calendar":
 				return isWithinTimeRange((java.util.Calendar) comparatorDate, checkRange, timeUnit, (java.util.Calendar)referenceDate);
+			case "java.time.Instant":
+				return isWithinTimeRange((java.time.Instant) comparatorDate, checkRange, timeUnit, (java.time.Instant)referenceDate);
 			default:
 				Assert.fail(String.format("Data type %s not supported.  Update this method to add support.", className));
 		}
 		return false;
 	}
 
+	public static boolean isAfter(String className, Object comparatorDate, Object referenceDate) {
+		switch (className) {
+			case "java.util.Date":
+				return ((java.util.Date) comparatorDate).after((java.util.Date) referenceDate);
+			case "java.sql.Date":
+				return ((java.sql.Date) comparatorDate).after((java.sql.Date) referenceDate);
+			default:
+				Assert.fail(String.format("Data type %s not supported.  Update this method to add support.", className));
+		}
+		return false;
+	}
+
+	public static boolean isBefore(String className, Object comparatorDate, Object referenceDate) {
+		switch (className) {
+			case "java.util.Date":
+				return ((java.util.Date) comparatorDate).before((java.util.Date) referenceDate);
+			case "java.sql.Date":
+				return ((java.sql.Date) comparatorDate).before((java.sql.Date) referenceDate);
+			default:
+				Assert.fail(String.format("Data type %s not supported.  Update this method to add support.", className));
+		}
+		return false;
+	}
 }

@@ -34,7 +34,7 @@ public class ListDoesNotContainsRule extends VerificationRule {
 			}
 			String expectedItemToString = new Gson().toJson(expectedItem);
 			String actualToString = new Gson().toJson(actual);
-			Assert.assertFalse(expectedItemFound, String.format("%s%sFound unexpected item %s\n...in list...\n%s.",
+			Assert.assertFalse(expectedItemFound, String.format("%s%sFound unexpect'd item %s\n...in list...\n%s.",
 					errorMessage, System.lineSeparator(), expectedItemToString, actualToString));
 
 		}

@@ -84,11 +84,11 @@ public class BasicTest {
 	public void testBoolean() {
 		ParentThing actualThing = new ParentThing()
 				.setFirstName("Joe")
-				.setActive(true);
+				.setIsActive(true);
 
 		ParentThing expectedThing = new ParentThing()
 				.setFirstName("Joe")
-				.setActive(true);
+				.setIsActive(true);
 
 		Verify.that(actualThing).isEqualTo(expectedThing);
 	}
@@ -97,11 +97,11 @@ public class BasicTest {
 	public void testBooleanFail() {
 		ParentThing actualThing = new ParentThing()
 				.setFirstName("Joe")
-				.setActive(false);
+				.setIsActive(false);
 
 		ParentThing expectedThing = new ParentThing()
 				.setFirstName("Joe")
-				.setActive(true);
+				.setIsActive(true);
 
 		Verify.that(actualThing).isEqualTo(expectedThing);
 	}

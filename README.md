@@ -158,14 +158,13 @@ Verify.that(actualTrack)
 
 ### Check all fields but don't check for exact order when comparing one collection
 If you need to specify a field-specific rule but also need to verify all fields,
- use the method checkAllFieldsForCurrentKey to force all fields to be checked.  Without this method, 
+ use the method withFieldRule() instead of includeField().  Otherwise, 
  only the fields specified by "includeField()" will be checked.
 
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Track.class)
-				.includeField("keyWords", new ListUnsortedRule())
-				.checkAllFieldsForCurrentKey();
+				.withFieldRule("keyWords", new ListUnsortedRule());
 
 Verify.that(actualTrack)
 		.usingFields(fieldsToCheck)
@@ -261,16 +260,15 @@ FieldsToCheck fieldsToCheck = new FieldsToCheck()
 In the above example, all fields in the Album object will be checked except for the "id" field.  The Album object contains
 a list of child Track objects.  Only the "id" field will be checked for the child Track objects.
 
-In cases where you need to specify a field-level VerificationRule and also need to check all fields, use the method
-checkAllFieldsForCurrentKey() at the end of adding fields for a particular key.
+In cases where you need to specify a field-level VerificationRule but also need to check all fields, use the method
+withFieldRule() instead of includeField().
 
 For example:
 
 ```java
 FieldsToCheck fieldsToCheck = new FieldsToCheck()
 				.withKey(Album.class)
-				.includeField("releaseDate", new DateTimeInRangeRule(5, ChronoUnit.MINUTES))
-				.checkAllFieldsForCurrentKey()
+				.withFieldRule("releaseDate", new DateTimeInRangeRule(5, ChronoUnit.MINUTES))
 				.withKey(Track.class)
 				.includeField("id");
 ```
@@ -308,11 +306,13 @@ with a message that the field "tittle" could not be found.
 Verify.that(actualTrack).usingFields("tittle").isEqualTo(expectedTrack);
 ```
 
+#### transient keyword
+If you have a class where you want to block certain fields from ever getting compared,
+you can use the Java "transient" keyword for the field declaration.  For example.
 
-#### @Transient Annotation
-If you are working with a domain class that includes additional methods besides the
-standard getters and setters, and if any of those additional methods start with "get", the method must be
-annotated with @Transient to prevent it from being included in comparisons.
+```java
+private transient String fieldToIgnore;
+```
 
 ### Verification Rules
 A verification rule controls how two items are compared.  For example, the StringContainsRule will assert
@@ -335,6 +335,13 @@ take parameters (ListUnsortedRule, MapContainsRule).
 
 
 ### List of Verification Rules With Examples
+* DateTimeComparisonRule(ComparisonType)
+
+In this example, if expected time is 4:30, then assertion will pass if the actual time is after 4:30.
+```java
+new DateTimeComparisonRule(DateTimeComparisonRule.ComparisonType.after)
+````
+
 * DateTimeInRangeRule(long range, TemporalUnit timeUnit)
 
 In this example, if expected time is 4:30, then assertion will pass if the actual time is between 3:30 and 5:30.
@@ -434,6 +441,11 @@ new StringExactMatchRule(CaseComparison.caseSensitive)
 
 
 ### Limitations
+* Getter methods for a domain object must follow the pattern "get[Fieldname]".  For example, 
+the getter for field "age" must be "getAge".  This can be a problem for boolean fields
+where the getter may have a different pattern.  For example, if the field is "isEnabled",
+the getter might be named "getEnabled".  In this case, verification will not find the field
+and it won't be included in verification.  Instead, the field getter should be named "getIsEnabled".
 * Value comparisons are achieved through Introspection.  This is slower than getting values directly through an object.
 This is not significant when comparing objects that have collections with multiple items in the 10s or even 100s, but
 the time impact can be significant if the objects under comparison have collections with thousands of items.

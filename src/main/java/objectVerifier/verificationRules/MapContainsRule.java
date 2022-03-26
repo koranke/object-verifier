@@ -25,7 +25,7 @@ public class MapContainsRule extends VerificationRule {
 		expected.putAll((Map)expectedObject);
 
 		Assert.assertTrue(actual.size() >= expected.size(),
-				String.format("%s%sActual map size less than expected map size.", errorMessage, System.lineSeparator()));
+				String.format("%s%sActual map size less than expect'd map size.", errorMessage, System.lineSeparator()));
 
 		Iterator iterator = expected.keySet().iterator();
 		while (iterator.hasNext()) {

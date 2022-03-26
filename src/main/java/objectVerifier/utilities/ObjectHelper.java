@@ -1,6 +1,9 @@
 package objectVerifier.utilities;
 
 import java.lang.reflect.Method;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ObjectHelper {
 
@@ -32,30 +35,21 @@ public class ObjectHelper {
 		if (cls == null) {
 			return false;
 		}
-		return cls == java.util.List.class ||
-				cls == java.util.ArrayList.class ||
-				cls == java.util.LinkedList.class ||
-				cls == java.util.Vector.class;
+		return List.class.isAssignableFrom(cls);
 	}
 
 	public static boolean isSet(Class<?> cls) {
 		if (cls == null) {
 			return false;
 		}
-		return cls == java.util.Set.class ||
-				cls == java.util.HashSet.class ||
-				cls == java.util.LinkedHashSet.class ||
-				cls == java.util.TreeSet.class;
+		return Set.class.isAssignableFrom(cls);
 	}
 
 	public static boolean isMap(Class<?> cls) {
 		if (cls == null) {
 			return false;
 		}
-		return cls == java.util.Map.class ||
-				cls == java.util.HashMap.class ||
-				cls == java.util.LinkedHashMap.class ||
-				cls == java.util.TreeMap.class;
+		return Map.class.isAssignableFrom(cls);
 	}
 
 	public static boolean isDateType(Class<?> cls) {
@@ -67,7 +61,8 @@ public class ObjectHelper {
 				cls == java.sql.Timestamp.class ||
 				cls == java.util.Calendar.class ||
 				cls == java.time.LocalDateTime.class ||
-				cls == java.time.LocalDate.class;
+				cls == java.time.LocalDate.class ||
+				cls == java.time.Instant.class;
 	}
 
 }

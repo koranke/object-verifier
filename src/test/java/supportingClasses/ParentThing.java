@@ -26,9 +26,8 @@ public class ParentThing {
 	private double aNativeDouble;
 	private float aNativeFloat;
 	private char aNativeChar;
-	private String ignoreMe;
+	private transient String ignoreMe;
 
-	@Transient
 	public String getIgnoreMe() {
 		return ignoreMe;
 	}
@@ -56,11 +55,11 @@ public class ParentThing {
 		return this;
 	}
 
-	public boolean isActive() {
+	public boolean getIsActive() {
 		return isActive;
 	}
 
-	public ParentThing setActive(boolean active) {
+	public ParentThing setIsActive(boolean active) {
 		isActive = active;
 		return this;
 	}

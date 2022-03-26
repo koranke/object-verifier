@@ -2,6 +2,7 @@ package objectVerifier;
 
 import objectVerifier.verificationRules.VerificationRule;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Verify {
@@ -53,13 +54,17 @@ public class Verify {
 		return this;
 	}
 
-	public Verify usingFields(String ... fieldsToCheck) {
+	public Verify usingFields(List<String> fieldsToCheck) {
 		this.fieldsToCheck = new FieldsToCheck();
 		this.fieldsToCheck.withKey(Object.class);
 		for (String fieldToCheck : fieldsToCheck) {
 			this.fieldsToCheck.includeField(fieldToCheck);
 		}
 		return this;
+	}
+
+	public Verify usingFields(String ... fieldsToCheck) {
+		return usingFields(Arrays.asList(fieldsToCheck));
 	}
 
 	public Verify usingRules(List<VerificationRule> rules) {

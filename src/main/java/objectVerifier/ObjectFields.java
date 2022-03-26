@@ -46,6 +46,12 @@ public class ObjectFields {
 		return this;
 	}
 
+	public ObjectFields addNonExclusiveField(String field, List<VerificationRule> verificationRules) {
+		fields.add(new ObjectField().setFieldName(field).setVerificationRules(verificationRules));
+		this.setCheckIncludedFieldsOnly(false);
+		return this;
+	}
+
 	public ObjectFields addField(ObjectField field) {
 		fields.add(field);
 		return this;

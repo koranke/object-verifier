@@ -49,12 +49,28 @@ public class FieldsToCheck {
 	}
 
 	public FieldsToCheck includeField(String field, List<VerificationRule> verificationRules) {
+		return includeField(field, verificationRules, false);
+	}
+
+	public FieldsToCheck withFieldRule(String field, VerificationRule verificationRule) {
+		return withFieldRule(field, Lists.newArrayList(verificationRule));
+	}
+
+	public FieldsToCheck withFieldRule(String field, List<VerificationRule> verificationRules) {
+		return includeField(field, verificationRules, true);
+	}
+
+	public FieldsToCheck includeField(String field, List<VerificationRule> verificationRules, boolean isNonExclusive) {
 		ObjectFields fieldList = fieldsToCheck.get(currentKey);
 		if (fieldList == null) {
 			fieldList = new ObjectFields();
 			fieldsToCheck.put(currentKey, fieldList);
 		}
-		fieldList.addField(field, verificationRules);
+		if (isNonExclusive) {
+			fieldList.addNonExclusiveField(field, verificationRules);
+		} else {
+			fieldList.addField(field, verificationRules);
+		}
 		return this;
 	}
 

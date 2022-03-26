@@ -24,7 +24,7 @@ public class ListContainsRule extends VerificationRule {
 		expected.addAll(ListConverter.getAsList(expectedObject));
 
 		Assert.assertTrue(actual.size() >= expected.size(),
-				String.format("%s%sActual list size is less than expected list size.", errorMessage, System.lineSeparator()));
+				String.format("%s%sActual list size is less than expect'd list size.", errorMessage, System.lineSeparator()));
 
 		for (Object expectedItem : expected) {
 			boolean expectedItemFound = false;
@@ -37,7 +37,7 @@ public class ListContainsRule extends VerificationRule {
 			}
 			String expectedItemToString = new Gson().toJson(expectedItem);
 			String actualToString = new Gson().toJson(actual);
-			Assert.assertTrue(expectedItemFound, String.format("%s%sFailed to find expected item %s\n...in list...\n%s.",
+			Assert.assertTrue(expectedItemFound, String.format("%s%sFailed to find expect'd item %s\n...in list...\n%s.",
 					errorMessage, System.lineSeparator(), expectedItemToString, actualToString));
 		}
 	}

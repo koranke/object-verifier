@@ -22,17 +22,17 @@ public class MapExactMatchRule extends VerificationRule {
 		expected.putAll((Map)expectedObject);
 
 		Assert.assertEquals(actual.size(), expected.size(),
-				String.format("%s%sActual map size doesn't match expected map size.", errorMessage, System.lineSeparator()));
+				String.format("%s%sActual map size doesn't match expect'd map size.", errorMessage, System.lineSeparator()));
 
 		Iterator iterator = expected.keySet().iterator();
 		while (iterator.hasNext()) {
 			Object key = iterator.next();
 			Assert.assertTrue(actual.containsKey(key), String.format("%s%sKey %s not found in actual map %s.",
-					errorMessage, System.lineSeparator(), key.toString(), actual.toString()));
+					errorMessage, System.lineSeparator(), key == null ? "null" : key.toString(), actual.toString()));
 			Object actualMapObject = actual.get(key);
 			Object expectedMapObject = expected.get(key);
 
-			errorMessage += String.format("\nKey: %s", key.toString());
+			errorMessage += String.format("\nKey: %s", key == null ? "null" : key.toString());
 
 			ObjectVerifier.verifyObject(actualMapObject, expectedMapObject, fieldsToCheck, verificationRules, errorMessage);
 		}

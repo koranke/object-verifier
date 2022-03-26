@@ -28,7 +28,7 @@ public class StringContainsRule extends VerificationRule {
 			actual = actual.toLowerCase();
 			expected = expected.toLowerCase();
 		}
-		Assert.assertTrue(actual.contains(expected), String.format("%s%sExpected '%s' to contain '%s'.",
+		Assert.assertTrue(actual.contains(expected), String.format("%s%sExpect'd '%s' to contain '%s'.",
 				errorMessage, System.lineSeparator(), actual, expected));
 	}
 }

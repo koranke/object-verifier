@@ -6,7 +6,8 @@ import objectVerifier.utilities.IntrospectionHelper;
 import objectVerifier.verificationRules.*;
 import org.testng.Assert;
 import java.beans.PropertyDescriptor;
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,15 +20,19 @@ public class ObjectVerifier {
 									List<VerificationRule> verificationRules,
 									String errorMessage) {
 
-		if (actualObject == null && expectedObject == null) {
-			return;
-		}
-		checkIfEitherObjectIsNull(actualObject, expectedObject, errorMessage);
-
-//		This method needs to be disabled until we fix it to handle collections properly
 //		checkThatClassesMatch(actualObject, expectedObject, errorMessage);
 
 		verificationRules = RulesHelper.setRulesToDefaultValuesIfNotSet(verificationRules);
+
+		VerificationRule isNotNullRule = verificationRules.stream().filter(rule ->	rule.getClass() == IsNotNullRule.class).findFirst().orElse(null);
+		if (isNotNullRule == null) {
+			if (actualObject == null && expectedObject == null) {
+				return;
+			}
+			checkIfEitherObjectIsNull(actualObject, expectedObject, errorMessage);
+		} else {
+			Assert.assertNotNull(actualObject, errorMessage);
+		}
 
 		if (RulesHelper.verificationRuleExistsForObjectDataType(actualObject, expectedObject, verificationRules)) {
 			for (VerificationRule verificationRule : verificationRules) {
@@ -71,9 +76,9 @@ public class ObjectVerifier {
 	}
 
 	private static String getStandardErrorMessage(Class<?> domainObjectClass, String currentDateMemberName, String contextMessage) {
-		String standardErrorMessage = String.format("%sUnexpected results for %s.%s.", System.lineSeparator(), domainObjectClass.getSimpleName(), currentDateMemberName);
+		String standardErrorMessage = String.format("%sUnexpect'd results for %s.%s.", System.lineSeparator(), domainObjectClass.getSimpleName(), currentDateMemberName);
 		if (contextMessage != null && !contextMessage.equals("")) {
-			standardErrorMessage = String.format("%s%s%s%s", System.lineSeparator(), contextMessage, System.lineSeparator(), standardErrorMessage);
+			standardErrorMessage = String.format("%s%s", contextMessage, standardErrorMessage);
 		}
 		return standardErrorMessage;
 	}
@@ -91,14 +96,20 @@ public class ObjectVerifier {
 		if (cls == Class.class || currentField.equals("class")) {
 			return false;
 		} else {
-			if (dataItemDescriptor != null && dataItemDescriptor.getReadMethod() != null) {
-				Annotation[] annotations = dataItemDescriptor.getReadMethod().getDeclaredAnnotations();
-				if (annotations != null) {
-					for (Annotation annotation : annotations) {
-						if (annotation.annotationType().equals(java.beans.Transient.class)) {
-							return false;
-						}
-					}
+			if (dataItemDescriptor != null && dataItemDescriptor.getReadMethod()!= null) {
+
+				//Check for transient keyword for field.  If yes, skip.
+				String fieldModifiers = null;
+				try {
+					fieldModifiers = Modifier.toString(getField(cls, currentField).getModifiers());
+				} catch (Exception e) {}
+				if (fieldModifiers != null && fieldModifiers.contains("transient")) {
+					return false;
+				}
+
+				//Some dataItemDescriptors are methods rather than fields.  Check that "field" is a real field.  If not, skip.
+				if (getField(cls, currentField) == null) {
+					return false;
 				}
 			}
 
@@ -109,6 +120,22 @@ public class ObjectVerifier {
 					(fieldsToCheck.getFieldListForClass(classToCheck).contains(currentField) && !fieldsToCheck.fieldIsExcluded(classToCheck, currentField)) ||
 					(!fieldsToCheck.getFieldListForClass(classToCheck).contains(currentField) && !fieldsToCheck.fieldListForClassIsRestricted(classToCheck));
 		}
+	}
+
+	private static Field getField(Class<?> cls, String targetField) {
+		if (cls == null) {
+			return null;
+		}
+
+		Field field;
+
+		try {
+			field = cls.getDeclaredField(targetField);
+		} catch (Exception e) {
+			field = getField(cls.getSuperclass(), targetField);
+		}
+
+		return field;
 	}
 
 	private static Class getClassToCheckForFields(FieldsToCheck fieldsToCheck, Class currentClass) {
@@ -135,19 +162,24 @@ public class ObjectVerifier {
 		Object actualObject = IntrospectionHelper.getGetterResult(dataItemDescriptor, objectUnderTest);
 		Object expectedObject = IntrospectionHelper.getGetterResult(dataItemDescriptor, comparisonObject);
 
-		if (actualObject == null && expectedObject == null) return;
-		checkIfEitherObjectIsNull(actualObject, expectedObject, errorMessage);
-
-//		This method needs to be disabled until we fix it to handle collections properly
 //		checkThatClassesMatch(actualObject, expectedObject, errorMessage);
 
+		Class classToUseForCheck = getClassToCheckForFields(fieldsToCheck, domainObjectClass);
+
 		if (fieldsToCheck != null &&
-				fieldsToCheck.fieldHasVerificationRules(domainObjectClass, dataItemDescriptor.getDisplayName())) {
+				fieldsToCheck.fieldHasVerificationRules(classToUseForCheck, dataItemDescriptor.getDisplayName())) {
 
 			verificationRules = RulesHelper.getMergedRules(
-					fieldsToCheck.getFieldVerificationRules(domainObjectClass, dataItemDescriptor.getDisplayName()),
+					fieldsToCheck.getFieldVerificationRules(classToUseForCheck, dataItemDescriptor.getDisplayName()),
 					verificationRules
 			);
+		}
+
+		VerificationRule isNotNullRule = verificationRules.stream().filter(rule ->	rule.getClass() == IsNotNullRule.class).findFirst().orElse(null);
+
+		if (isNotNullRule == null) {
+			if (actualObject == null && expectedObject == null) return;
+			checkIfEitherObjectIsNull(actualObject, expectedObject, errorMessage);
 		}
 
 		verifyObject(actualObject, expectedObject, fieldsToCheck, verificationRules, errorMessage);
