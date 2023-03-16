@@ -17,11 +17,9 @@ public class ListDoesNotContainsRule extends VerificationRule {
 	}
 
 	public void verifyObject(Object actualObject, Object expectedObject, FieldsToCheck fieldsToCheck, List<VerificationRule> verificationRules, String errorMessage) {
-		List<?> actual = new ArrayList<>();
-		actual.addAll(ListConverter.getAsList(actualObject));
+		List<?> actual = new ArrayList<>(ListConverter.getAsList(actualObject));
 
-		List<?> expected = new ArrayList<>();
-		expected.addAll(ListConverter.getAsList(expectedObject));
+		List<?> expected = new ArrayList<>(ListConverter.getAsList(expectedObject));
 
 		for (Object expectedItem : expected) {
 			boolean expectedItemFound = false;

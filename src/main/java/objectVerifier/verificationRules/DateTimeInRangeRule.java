@@ -10,8 +10,8 @@ import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 public class DateTimeInRangeRule extends VerificationRule {
-	private long range = 0;
-	private TemporalUnit timeUnit;
+	private final long range;
+	private final TemporalUnit timeUnit;
 
 	public DateTimeInRangeRule(long range, TemporalUnit timeUnit) {
 		super(Lists.newArrayList(new DateApplicationRule()));

@@ -16,8 +16,7 @@ public class ListConverter {
 		}
 		if (ObjectHelper.isSet(object.getClass())) {
 			Set<?> set = (Set<?>) object;
-			List<?> list = new ArrayList<>(set);
-			return list;
+			return new ArrayList<>(set);
 		}
 		if (ObjectHelper.isArray(object.getClass())) {
 			try {
@@ -89,7 +88,7 @@ public class ListConverter {
 				return convertedList;
 			}
 		}
-		Assert.fail("Failed to convert object to list. " + object.toString());
+		Assert.fail("Failed to convert object to list. " + object);
 		return null;
 	}
 }

@@ -10,8 +10,7 @@ public class IntrospectionHelper {
 
 	public static <T> PropertyDescriptor[] getPropertyDescriptors(Class<T> cls) {
 		BeanInfo beanInfo = getBeanInfo(cls);
-		PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-		return descriptors;
+		return beanInfo.getPropertyDescriptors();
 	}
 
 	public static <T> BeanInfo getBeanInfo(Class<T> cls) {
@@ -28,13 +27,11 @@ public class IntrospectionHelper {
 	public static <T> T getGetterResult(PropertyDescriptor propertyDescriptor, Object object) {
 		try {
 			if (propertyDescriptor.getReadMethod() != null) {
-				T result = ((T) propertyDescriptor.getReadMethod().invoke(object));
-				return result;
+				return ((T) propertyDescriptor.getReadMethod().invoke(object));
 			} else {
 				Method method = getBooleanMethod(propertyDescriptor, object);
 				if (method != null) {
-					T result = (T) method.invoke(object);
-					return result;
+					return (T) method.invoke(object);
 				}
 				System.out.println("WARNING: Unable to find getter method for object: " + propertyDescriptor.getName());
 			}
@@ -51,9 +48,9 @@ public class IntrospectionHelper {
 		propertyName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
 		if (propertyDescriptor.getPropertyType().getSimpleName().equals("Boolean")) {
 			Method[] methods = object.getClass().getMethods();
-			for (int i = 0; i < methods.length; i++) {
-				if (methods[i].getName().equals("is" + propertyName)) {
-					return methods[i];
+			for (Method method : methods) {
+				if (method.getName().equals("is" + propertyName)) {
+					return method;
 				}
 			}
 		}

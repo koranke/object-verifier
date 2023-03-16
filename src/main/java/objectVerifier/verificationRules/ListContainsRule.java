@@ -17,11 +17,9 @@ public class ListContainsRule extends VerificationRule {
 	}
 
 	public void verifyObject(Object actualObject, Object expectedObject, FieldsToCheck fieldsToCheck, List<VerificationRule> verificationRules, String errorMessage) {
-		List<?> actual = new ArrayList<>();
-		actual.addAll(ListConverter.getAsList(actualObject));
+		List<?> actual = new ArrayList<>(ListConverter.getAsList(actualObject));
 
-		List<?> expected = new ArrayList<>();
-		expected.addAll(ListConverter.getAsList(expectedObject));
+		List<?> expected = new ArrayList<>(ListConverter.getAsList(expectedObject));
 
 		Assert.assertTrue(actual.size() >= expected.size(),
 				String.format("%s%sActual list size is less than expect'd list size.", errorMessage, System.lineSeparator()));

@@ -10,7 +10,7 @@ import java.util.List;
 public class DateTimeComparisonRule extends VerificationRule {
 	public enum ComparisonType { before, after }
 
-	private ComparisonType comparisonType;
+	private final ComparisonType comparisonType;
 
 	public DateTimeComparisonRule(ComparisonType comparisonType) {
 		super(Lists.newArrayList(new DateApplicationRule()));
